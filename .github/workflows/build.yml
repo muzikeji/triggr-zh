@@ -14,21 +14,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Theos dependencies
-        run: brew install ldid xz
+        run: brew install ldid xz libarchive
 
       - name: Set up Theos
         run: |
-          git clone --depth 1 --branch 3.1.0 https://github.com/theos/theos.git $THEOS
+          git clone --depth 1 --recursive https://github.com/theos/theos.git $THEOS
           echo "THEOS=$THEOS" >> $GITHUB_ENV
         env:
           THEOS: /Users/runner/theos
 
       - name: Download iOS SDK
         run: |
-          cd $THEOS
+          mkdir -p $THEOS/sdks
+          cd $THEOS/sdks
           curl -L -o sdks.zip https://github.com/theos/sdks/archive/refs/heads/master.zip
           unzip -q sdks.zip
-          mv sdks-master/iPhoneOS16.5.sdk sdk
+          mv sdks-master/iPhoneOS16.5.sdk ./
           rm -rf sdks-master sdks.zip
         env:
           THEOS: /Users/runner/theos
