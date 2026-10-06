@@ -47,7 +47,7 @@ jobs:
 
       - name: Build package (arm64e)
         run: |
-          sed -i 's/^Architecture:.*/Architecture: iphoneos-arm64e/' control
+          sed -i.bak 's/^Architecture:.*/Architecture: iphoneos-arm64e/' control && rm -f control.bak
           make clean
           make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64e"
           ls -la packages/
