@@ -2050,7 +2050,7 @@ static NSString *TGSetupSummary(NSDictionary *setup, BOOL *hasCommands, BOOL *ha
         [specs addObject:menus];
 
         PSSpecifier *more = [PSSpecifier groupSpecifierWithName:nil];
-        [more setProperty:[NSString stringWithFormat:@"Triggr %@ · John d_ie", [TG_VERSION stringByReplacingOccurrencesOfString:@"~" withString:@" "]] forKey:@"footerText"];
+        [more setProperty:[NSString stringWithFormat:@"Triggr %@ · John d_ie\n汉化服务：MUtool 作者\n源：https://muzikeji.github.io/sileo/", [TG_VERSION stringByReplacingOccurrencesOfString:@"~" withString:@" "]] forKey:@"footerText"];
         [more setProperty:@1 forKey:@"footerAlignment"]; // centred
         [specs addObject:more];
         PSSpecifier *options = [PSSpecifier preferenceSpecifierNamed:@"选项" target:self set:nil get:nil detail:TGOptionsController.class cell:PSLinkCell edit:nil];

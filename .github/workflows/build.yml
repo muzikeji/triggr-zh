@@ -34,24 +34,34 @@ jobs:
         env:
           THEOS: /Users/runner/theos
 
-      - name: Build package (arm64 + arm64e)
+      - name: Build package (arm64)
         run: |
           echo "== THEOS=$THEOS =="
           ls -la $THEOS/sdks/
           echo "== SDK check =="
           ls $THEOS/sdks/iPhoneOS16.5.sdk/System/Library/PrivateFrameworks/Preferences.framework/
-          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64 arm64e"
+          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64"
           ls -la packages/
+          mkdir -p dist
+          cp packages/*.deb dist/
+
+      - name: Build package (arm64e)
+        run: |
+          sed -i 's/^Architecture:.*/Architecture: iphoneos-arm64e/' control
+          make clean
+          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64e"
+          ls -la packages/
+          cp packages/*.deb dist/
 
       - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
         with:
           name: triggr-zh-deb
-          path: packages/*.deb
+          path: dist/*.deb
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: packages/*.deb
+          files: dist/*.deb
           generate_release_notes: true
