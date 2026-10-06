@@ -40,7 +40,7 @@ jobs:
           ls -la $THEOS/sdks/
           echo "== SDK check =="
           ls $THEOS/sdks/iPhoneOS16.5.sdk/System/Library/PrivateFrameworks/Preferences.framework/
-          make package VERBOSE=1 FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64 arm64e"
+          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64 arm64e"
           ls -la packages/
 
       - name: Upload .deb artifact
