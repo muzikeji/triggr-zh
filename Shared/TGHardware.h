@@ -28,6 +28,6 @@ static inline BOOL TGHasHomeButton(void) {
 
 // Apple's name for the lock button where there's no Home button.
 static inline NSString *TGLockButtonName(void) {
-    if (TGHasHomeButton()) return @"Lock Button";
-    return UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad ? @"Top Button" : @"Side Button";
+    if (TGHasHomeButton()) return @"锁屏按钮";
+    return UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad ? @"顶部按钮" : @"侧边按钮";
 }

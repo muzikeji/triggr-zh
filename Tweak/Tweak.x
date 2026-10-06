@@ -70,7 +70,7 @@ static void TGReadAssignments(void) {
     id menus = CFBridgingRelease(CFPreferencesCopyAppValue((__bridge CFStringRef)TGMenusKey, domain));
     NSMutableDictionary *menuNames = [NSMutableDictionary dictionary];
     for (id menu in [menus isKindOfClass:NSArray.class] ? menus : @[])
-        if ([menu isKindOfClass:NSDictionary.class] && [menu[@"id"] isKindOfClass:NSString.class]) menuNames[menu[@"id"]] = [menu[@"name"] description] ?: @"Menu";
+        if ([menu isKindOfClass:NSDictionary.class] && [menu[@"id"] isKindOfClass:NSString.class]) menuNames[menu[@"id"]] = [menu[@"name"] description] ?: @"菜单";
     tgMenuNames = menuNames;
     id enabled = CFBridgingRelease(CFPreferencesCopyAppValue((__bridge CFStringRef)TGEnabledKey, domain));
     if ([enabled respondsToSelector:@selector(boolValue)] && ![enabled boolValue]) {
@@ -474,7 +474,7 @@ static BOOL TGSwitchFor(NSString *name, TGSwitch *out) {
         out->get = ^BOOL { return assertion != nil; };
         out->set = ^(BOOL on) {
             if (on && !assertion) {
-                assertion = ((id (*)(id, SEL, id))objc_msgSend)(coordinator, acquire, @"Triggr: Keep Screen Awake");
+                assertion = ((id (*)(id, SEL, id))objc_msgSend)(coordinator, acquire, @"Triggr：保持屏幕常亮");
             } else if (!on && assertion) {
                 if ([assertion respondsToSelector:@selector(invalidate)]) ((void (*)(id, SEL))objc_msgSend)(assertion, @selector(invalidate));
                 assertion = nil;
@@ -757,7 +757,7 @@ static NSDictionary<NSString *, TGActionBlock> *TGActionTable(void) {
                 if (![service respondsToSelector:sel]) return NO;
                 if (!dry) {
                     NSString *app = TGFrontAppIdentifier();
-                    if (app) ((void (*)(id, SEL, id, long long, BOOL, id, id))objc_msgSend)(service, sel, app, 1, NO, @"Triggr: Quit Current App", nil);
+                    if (app) ((void (*)(id, SEL, id, long long, BOOL, id, id))objc_msgSend)(service, sel, app, 1, NO, @"Triggr：退出当前应用", nil);
                 }
                 return YES;
             },
@@ -1004,13 +1004,13 @@ static void TGRunActions(NSArray<NSString *> *actions) {
 
 // A title for any action, with app and menu names looked up in SpringBoard.
 static NSString *TGSpringBoardTitle(NSString *action) {
-    if ([action hasPrefix:TGMenuPrefix]) return tgMenuNames[[action substringFromIndex:TGMenuPrefix.length]] ?: @"Menu";
+    if ([action hasPrefix:TGMenuPrefix]) return tgMenuNames[[action substringFromIndex:TGMenuPrefix.length]] ?: @"菜单";
     if ([action hasPrefix:TGAppPrefix]) {
         id controller = TGShared("SBApplicationController");
         NSString *identifier = [action substringFromIndex:TGAppPrefix.length];
         id app = [controller respondsToSelector:@selector(applicationWithBundleIdentifier:)] ? [controller performSelector:@selector(applicationWithBundleIdentifier:) withObject:identifier] : nil;
         id name = [app respondsToSelector:@selector(displayName)] ? [app performSelector:@selector(displayName)] : nil;
-        return [@"Open " stringByAppendingString:[name isKindOfClass:NSString.class] ? name : identifier];
+        return [@"打开 " stringByAppendingString:[name isKindOfClass:NSString.class] ? name : identifier];
     }
     return TGActionTitle(action);
 }
@@ -1098,7 +1098,7 @@ static void TGShowMenu(NSString *menuID) {
             TGRunActions(@[item]);
         }]];
     }
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) { TGCloseMenu(); }]];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) { TGCloseMenu(); }]];
     UIView *root = tgMenuWindow.rootViewController.view;
     sheet.popoverPresentationController.sourceView = root;
     sheet.popoverPresentationController.sourceRect = CGRectMake(CGRectGetMidX(root.bounds), CGRectGetMidY(root.bounds), 1, 1);

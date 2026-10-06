@@ -1,0 +1,52 @@
+name: Build .deb
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Theos dependencies
+        run: brew install ldid xz
+
+      - name: Set up Theos
+        run: |
+          git clone --depth 1 --branch 3.1.0 https://github.com/theos/theos.git $THEOS
+          echo "THEOS=$THEOS" >> $GITHUB_ENV
+        env:
+          THEOS: /Users/runner/theos
+
+      - name: Download iOS SDK
+        run: |
+          cd $THEOS
+          curl -L -o sdks.zip https://github.com/theos/sdks/archive/refs/heads/master.zip
+          unzip -q sdks.zip
+          mv sdks-master/iPhoneOS16.5.sdk sdk
+          rm -rf sdks-master sdks.zip
+        env:
+          THEOS: /Users/runner/theos
+
+      - name: Build package (arm64 + arm64e)
+        run: |
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64 arm64e"
+          ls -la packages/
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: triggr-zh-deb
+          path: packages/*.deb
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: packages/*.deb
+          generate_release_notes: true
