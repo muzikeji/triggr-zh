@@ -9,12 +9,14 @@ on:
 jobs:
   build:
     runs-on: macos-14
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Theos dependencies
-        run: brew install ldid xz libarchive
+        run: brew install ldid xz libarchive dpkg
 
       - name: Set up Theos
         run: |
@@ -34,24 +36,48 @@ jobs:
         env:
           THEOS: /Users/runner/theos
 
-      - name: Build package (arm64)
+      - name: Build fat package (arm64 + arm64e)
         run: |
           echo "== THEOS=$THEOS =="
           ls -la $THEOS/sdks/
           echo "== SDK check =="
           ls $THEOS/sdks/iPhoneOS16.5.sdk/System/Library/PrivateFrameworks/Preferences.framework/
-          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64"
+          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64 arm64e"
           ls -la packages/
-          mkdir -p dist
-          cp packages/*.deb dist/
 
-      - name: Build package (arm64e)
+      - name: Split into arm64 and arm64e debs
         run: |
-          sed -i.bak 's/^Architecture:.*/Architecture: iphoneos-arm64e/' control && rm -f control.bak
-          make clean
-          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless ARCHS="arm64e"
-          ls -la packages/
-          cp packages/*.deb dist/
+          set -e
+          DEB=$(ls packages/*.deb)
+          PKG=com.johndie.triggr
+          VER=$(dpkg-deb -f "$DEB" Version)
+          mkdir -p split/arm64 split/arm64e dist
+          dpkg-deb -x "$DEB" split/arm64
+          cp -a split/arm64/. split/arm64e/
+          dpkg-deb -e "$DEB" split/arm64/DEBIAN
+          cp -a split/arm64/DEBIAN/. split/arm64e/DEBIAN/
+
+          for f in \
+            var/jb/Library/MobileSubstrate/DynamicLibraries/Triggr.dylib \
+            var/jb/Library/MobileSubstrate/DynamicLibraries/TriggrRelay.dylib \
+            var/jb/Library/PreferenceBundles/Triggr.bundle/Triggr \
+            var/jb/usr/bin/triggr ; do
+            lipo "split/arm64/$f" -thin arm64   -output /tmp/bin-arm64
+            lipo "split/arm64e/$f" -thin arm64e -output /tmp/bin-arm64e
+            cp /tmp/bin-arm64  "split/arm64/$f"
+            cp /tmp/bin-arm64e "split/arm64e/$f"
+          done
+
+          sed -i '' 's/^Architecture:.*/Architecture: iphoneos-arm64/' split/arm64/DEBIAN/control
+          sed -i '' 's/^Architecture:.*/Architecture: iphoneos-arm64e/' split/arm64e/DEBIAN/control
+
+          dpkg-deb -b -Zgzip split/arm64  "dist/${PKG}_${VER}_iphoneos-arm64.deb"
+          dpkg-deb -b -Zgzip split/arm64e "dist/${PKG}_${VER}_iphoneos-arm64e.deb"
+          ls -la dist/
+          echo "== arm64 control =="
+          dpkg-deb -f dist/${PKG}_${VER}_iphoneos-arm64.deb Package Version Architecture
+          echo "== arm64e control =="
+          dpkg-deb -f dist/${PKG}_${VER}_iphoneos-arm64e.deb Package Version Architecture
 
       - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
