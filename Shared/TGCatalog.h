@@ -103,73 +103,6 @@ static const TGGroup TGTriggerGroups[] = {
     {"状态变化", TGStateChanges, TG_COUNT(TGStateChanges), "在变化发生后执行。控制中心的 Wi-Fi 按钮只会断开当前网络（触发「已断开 Wi-Fi 网络」），Wi-Fi 本身仍然开启。由 Triggr 自身动作引起的变化会忽略一秒钟，以避免动作循环触发。"},
 };
 
-static const TGItem TGHomeButton[] = {
-    {"home.single", "Single Press"}, {"home.double", "Double Press"}, {"home.triple", "Triple Press"},
-    {"home.shorthold", "Short Hold"}, {"home.longhold", "Long Hold"},
-};
-static const TGItem TGTouchID[] = {
-    {"touchid.doubletap", "Light Double Tap"}, {"touchid.rest", "Finger Rest (Lock Screen)"}, {"touchid.match", "Finger Match (Lock Screen)"},
-};
-static const TGItem TGLockButton[] = {
-    {"lock.single", "Single Press"}, {"lock.double", "Double Press"}, {"lock.triple", "Triple Press"}, {"lock.longhold", "Hold"},
-};
-static const TGItem TGVolume[] = {
-    {"volume.up", "Up Press"}, {"volume.down", "Down Press"}, {"volume.uphold", "Up Hold"},
-    {"volume.downhold", "Down Hold"}, {"volume.updown", "Up, then Down"}, {"volume.downup", "Down, then Up"},
-    {"volume.both", "Press Both"}, {"volume.bothhold", "Hold Both"},
-};
-static const TGItem TGMuteSwitch[] = { {"mute.silent", "Switched to Silent"}, {"mute.ring", "Switched to Ring"}, {"mute.toggle", "Toggled"} };
-static const TGItem TGStatusBar[] = {
-    {"statusbar.tap", "Tap"}, {"statusbar.doubletap", "Double Tap"}, {"statusbar.hold", "Hold"},
-    {"statusbar.left.tap", "Left Tap"}, {"statusbar.left.doubletap", "Left Double Tap"}, {"statusbar.left.hold", "Left Hold"},
-    {"statusbar.right.tap", "Right Tap"}, {"statusbar.right.doubletap", "Right Double Tap"}, {"statusbar.right.hold", "Right Hold"},
-    {"statusbar.swipeleft", "Swipe Left"}, {"statusbar.swiperight", "Swipe Right"},
-};
-// Shake rides on iOS's own shake detection, so no sensor runs for Triggr.
-static const TGItem TGMotion[] = { {"motion.shake", "Shake Device"} };
-// A quick flick that starts on a Home Screen icon (see TGFlickRecognizer).
-// Gestures on the Home Screen pages themselves (not on an icon).
-static const TGItem TGHomeGestures[] = {
-    {"homescreen.pinchin", "Pinch In"}, {"homescreen.pinchout", "Spread"},
-    {"homescreen.twoup", "Two-Finger Swipe Up"}, {"homescreen.twodown", "Two-Finger Swipe Down"},
-    {"homescreen.doubletap", "Double Tap Empty Space"},
-};
-static const TGItem TGIcons[] = {
-    {"icon.flickup", "Flick Up"}, {"icon.flickdown", "Flick Down"}, {"icon.flickleft", "Flick Left"}, {"icon.flickright", "Flick Right"},
-};
-// Not offered: slide-in edge gestures and Home Screen pinches (they'd compete
-// with system gestures), status bar swipes (apps draw their own status bar).
-static const TGItem TGOther[] = {
-    {"power.connected", "Charger Connected"}, {"power.disconnected", "Charger Disconnected"},
-    {"headphones.in", "Headphones Connected"}, {"headphones.out", "Headphones Disconnected"},
-};
-
-// The proximity sensor (by the earpiece), only kept on while the screen is.
-static const TGItem TGProximity[] = { {"proximity.cover", "Cover"}, {"proximity.wave", "Wave (Cover Briefly)"} };
-static const TGItem TGStateChanges[] = {
-    {"wifi.on", "Wi-Fi Turned On"}, {"wifi.off", "Wi-Fi Turned Off"},
-    {"wifi.joined", "Joined Wi-Fi Network"}, {"wifi.left", "Left Wi-Fi Network"},
-    {"bluetooth.on", "Bluetooth Turned On"}, {"bluetooth.off", "Bluetooth Turned Off"},
-    {"lowpower.on", "Low Power Mode On"}, {"lowpower.off", "Low Power Mode Off"},
-    {"device.locked", "Device Locked"}, {"device.unlocked", "Device Unlocked"},
-    {"display.on", "Screen Turned On"}, {"display.off", "Screen Turned Off"},
-};
-
-static const TGGroup TGTriggerGroups[] = {
-    {"Home Button", TGHomeButton, TG_COUNT(TGHomeButton), NULL},
-    {"Touch ID", TGTouchID, TG_COUNT(TGTouchID), "Light Double Tap is touching the sensor twice without clicking. iOS doesn't report single taps or holds while unlocked. Finger Rest and Match only work on the Lock Screen and run alongside unlocking."},
-    {"Lock Button", TGLockButton, TG_COUNT(TGLockButton), NULL},
-    {"Volume Buttons", TGVolume, TG_COUNT(TGVolume), "Up, then Down (and the reverse) are two quick presses; they always run alongside, and the volume ends where it started."},
-    {"Mute Switch", TGMuteSwitch, TG_COUNT(TGMuteSwitch), "With Replace on, the switch's position and the ringer can differ until you flip it back."},
-    {"Status Bar", TGStatusBar, TG_COUNT(TGStatusBar), "Works on the Home Screen, Lock Screen and inside apps. A single tap still scrolls to the top. Hold is half a second. Left and Right are each half of the status bar: when one is assigned, it runs instead of plain Tap, Double Tap or Hold on that side. Swipe Left and Right are a quick sideways swipe along the bar; swiping down still opens Notification Center or Control Center."},
-    {"Home Screen Icons", TGIcons, TG_COUNT(TGIcons), "A quick flick that starts on an app or folder icon on the Home Screen or in the Dock. Widgets, the App Library and jiggle mode are left alone. Flick Left and Flick Right take over page swipes that start on an icon."},
-    {"Home Screen Gestures", TGHomeGestures, TG_COUNT(TGHomeGestures), "On the Home Screen pages, not on an icon. Two-finger swipes and pinches leave one-finger scrolling, Spotlight and Today alone; Double Tap only counts on an empty spot. Ignored while editing the Home Screen or with a folder open."},
-    {"Motion", TGMotion, TG_COUNT(TGMotion), "Uses iOS's own shake detection (the one behind Shake to Undo), so it costs no battery. Works while the phone is unlocked and awake; Shake to Undo still appears where an app offers it."},
-    {"Charger & Headphones", TGOther, TG_COUNT(TGOther), "Taking an AirPod out can count as Headphones Disconnected, because iOS moves the sound to the speaker."},
-    {"Proximity Sensor", TGProximity, TG_COUNT(TGProximity), "The sensor next to the earpiece. With one of these assigned it stays on while the screen is on (a little extra battery). Wave is covering it for under half a second; with Wave assigned, Cover waits that long before it runs."},
-    {"State Changes", TGStateChanges, TG_COUNT(TGStateChanges), "Runs after the change. Control Center's Wi-Fi button only disconnects from the network (Left Wi-Fi Network); Wi-Fi stays on. Changes caused by Triggr's own actions are ignored for a second, so assignments can't loop."},
-};
-
 static const TGItem TGSystemActions[] = {
     {"system.home", "前往主屏幕"}, {"system.switcher", "应用切换器"},
     {"system.lastapp", "上一个应用"}, {"system.quitapp", "退出当前应用"},
@@ -415,9 +348,9 @@ static inline NSString *TGTriggerTitle(NSString *trigger) {
             if ([trigger isEqualToString:@(TGTriggerGroups[g].items[i].identifier)]) {
                 // Events ("Charger Connected") read fine alone; presses need their button.
                 BOOL event = TGTriggerGroups[g].items == TGOther || TGTriggerGroups[g].items == TGStateChanges || TGTriggerGroups[g].items == TGMotion;
-                if (TGTriggerGroups[g].items == TGIcons) return [NSString stringWithFormat:@"图标%@", @(TGTriggerGroups[g].items[i].title)];
-                if (TGTriggerGroups[g].items == TGHomeGestures) return [NSString stringWithFormat:@"主屏幕%@", @(TGTriggerGroups[g].items[i].title)];
-                return event ? @(TGTriggerGroups[g].items[i].title) : [NSString stringWithFormat:@"%@：%@", @(TGTriggerGroups[g].title), @(TGTriggerGroups[g].items[i].title)];
+                if (TGTriggerGroups[g].items == TGIcons) return [NSString stringWithFormat:@"图标 %s", TGTriggerGroups[g].items[i].title];
+                if (TGTriggerGroups[g].items == TGHomeGestures) return [NSString stringWithFormat:@"主屏幕 %s", TGTriggerGroups[g].items[i].title];
+                return event ? @(TGTriggerGroups[g].items[i].title) : [NSString stringWithFormat:@"%s：%s", TGTriggerGroups[g].title, TGTriggerGroups[g].items[i].title];
             }
     return trigger;
 }
