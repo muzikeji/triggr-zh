@@ -30,10 +30,77 @@ typedef struct { const char *title; const TGItem *items; int count; const char *
 
 // Where an assignment applies, as in Activator.
 static const TGItem TGModes[] = {
-    {"anywhere", "Anywhere"},
-    {"home",     "At Home Screen"},
-    {"app",      "In Apps"},
-    {"lock",     "At Lock Screen"},
+    {"anywhere", "任意位置"},
+    {"home",     "主屏幕"},
+    {"app",      "在应用内"},
+    {"lock",     "锁屏时"},
+};
+
+static const TGItem TGHomeButton[] = {
+    {"home.single", "单击"}, {"home.double", "双击"}, {"home.triple", "三击"},
+    {"home.shorthold", "短按不放"}, {"home.longhold", "长按"},
+};
+static const TGItem TGTouchID[] = {
+    {"touchid.doubletap", "轻点两次"}, {"touchid.rest", "手指停留（锁屏）"}, {"touchid.match", "指纹匹配（锁屏）"},
+};
+static const TGItem TGLockButton[] = {
+    {"lock.single", "单击"}, {"lock.double", "双击"}, {"lock.triple", "三击"}, {"lock.longhold", "长按"},
+};
+static const TGItem TGVolume[] = {
+    {"volume.up", "按音量加"}, {"volume.down", "按音量减"}, {"volume.uphold", "长按音量加"},
+    {"volume.downhold", "长按音量减"}, {"volume.updown", "先加后减"}, {"volume.downup", "先减后加"},
+    {"volume.both", "同时按下"}, {"volume.bothhold", "久按两个键"},
+};
+static const TGItem TGMuteSwitch[] = { {"mute.silent", "切换到静音"}, {"mute.ring", "切换到响铃"}, {"mute.toggle", "切换静音/响铃"} };
+static const TGItem TGStatusBar[] = {
+    {"statusbar.tap", "点按"}, {"statusbar.doubletap", "双击"}, {"statusbar.hold", "长按"},
+    {"statusbar.left.tap", "左侧点按"}, {"statusbar.left.doubletap", "左侧双击"}, {"statusbar.left.hold", "左侧长按"},
+    {"statusbar.right.tap", "右侧点按"}, {"statusbar.right.doubletap", "右侧双击"}, {"statusbar.right.hold", "右侧长按"},
+    {"statusbar.swipeleft", "向左滑动"}, {"statusbar.swiperight", "向右滑动"},
+};
+// Shake rides on iOS's own shake detection, so no sensor runs for Triggr.
+static const TGItem TGMotion[] = { {"motion.shake", "摇一摇"} };
+// A quick flick that starts on a Home Screen icon (see TGFlickRecognizer).
+// Gestures on the Home Screen pages themselves (not on an icon).
+static const TGItem TGHomeGestures[] = {
+    {"homescreen.pinchin", "捏合"}, {"homescreen.pinchout", "张开"},
+    {"homescreen.twoup", "双指上滑"}, {"homescreen.twodown", "双指下滑"},
+    {"homescreen.doubletap", "双击空白处"},
+};
+static const TGItem TGIcons[] = {
+    {"icon.flickup", "上滑"}, {"icon.flickdown", "下滑"}, {"icon.flickleft", "左滑"}, {"icon.flickright", "右滑"},
+};
+// Not offered: slide-in edge gestures and Home Screen pinches (they'd compete
+// with system gestures), status bar swipes (apps draw their own status bar).
+static const TGItem TGOther[] = {
+    {"power.connected", "充电器已连接"}, {"power.disconnected", "充电器已断开"},
+    {"headphones.in", "耳机已连接"}, {"headphones.out", "耳机已断开"},
+};
+
+// The proximity sensor (by the earpiece), only kept on while the screen is.
+static const TGItem TGProximity[] = { {"proximity.cover", "遮挡"}, {"proximity.wave", "挥手（短暂遮挡）"} };
+static const TGItem TGStateChanges[] = {
+    {"wifi.on", "Wi-Fi 已开启"}, {"wifi.off", "Wi-Fi 已关闭"},
+    {"wifi.joined", "已连接 Wi-Fi 网络"}, {"wifi.left", "已断开 Wi-Fi 网络"},
+    {"bluetooth.on", "蓝牙已开启"}, {"bluetooth.off", "蓝牙已关闭"},
+    {"lowpower.on", "低电量模式已开启"}, {"lowpower.off", "低电量模式已关闭"},
+    {"device.locked", "设备已锁定"}, {"device.unlocked", "设备已解锁"},
+    {"display.on", "屏幕已点亮"}, {"display.off", "屏幕已熄灭"},
+};
+
+static const TGGroup TGTriggerGroups[] = {
+    {"主屏幕按钮", TGHomeButton, TG_COUNT(TGHomeButton), NULL},
+    {"触控 ID", TGTouchID, TG_COUNT(TGTouchID), "「轻点两次」是不按下去的状态下轻触传感器两次。解锁状态下 iOS 不报告单击或长按。手指停留和指纹匹配仅在锁屏时生效，并会伴随解锁一起执行。"},
+    {"锁屏按钮", TGLockButton, TG_COUNT(TGLockButton), NULL},
+    {"音量按键", TGVolume, TG_COUNT(TGVolume), "「先加后减」（以及相反的「先减后加」）是两次快速按动；它们始终伴随音量变动一起执行，音量会回到起点位置。"},
+    {"静音开关", TGMuteSwitch, TG_COUNT(TGMuteSwitch), "开启「替换」后，开关的位置与铃声音量可能不一致，直到你把它拨回原位。"},
+    {"状态栏", TGStatusBar, TG_COUNT(TGStatusBar), "在主屏幕、锁屏和应用内都可用。单击仍会滑动到顶部。长按为半秒。左侧与右侧分别对应状态栏的一半：当某一侧被分配后，该侧的普通点按、双击或长按将由分配的动作代替。左滑与右滑是沿状态栏的快速横向滑动；向下滑动仍会打开通知中心或控制中心。"},
+    {"主屏幕图标", TGIcons, TG_COUNT(TGIcons), "在主屏幕或程序坞的某个应用或文件夹图标上开始的一次快速滑动。小组件、应用资料库和抖动编辑模式都不会触发。左滑与右滑会接管从图标上开始翻页的手势。"},
+    {"主屏幕手势", TGHomeGestures, TG_COUNT(TGHomeGestures), "作用于主屏幕页面本身，而非图标。双指滑动与捏合不会干扰单指滚动、搜索（Spotlight）或今日视图；双击仅在空白处生效。在主屏幕编辑状态下或文件夹展开时会忽略。"},
+    {"动作", TGMotion, TG_COUNT(TGMotion), "使用 iOS 自身的摇动检测（即「摇动撤销」背后的动作），因此不额外耗电。在手机解锁且唤醒状态下生效；即使应用提供了「摇动撤销」，它仍然照常出现。"},
+    {"充电与耳机", TGOther, TG_COUNT(TGOther), "取出 AirPod 可能会被计为「耳机已断开」，因为 iOS 会把声音切回扬声器。"},
+    {"距离传感器", TGProximity, TG_COUNT(TGProximity), "听筒旁边的传感器。一旦分配了其中一项，它在屏幕点亮时会保持开启（会略微增加耗电）。「挥手」指遮挡时间不超过半秒；当分配了「挥手」时，「遮挡」会等待这么长时间后才执行。"},
+    {"状态变化", TGStateChanges, TG_COUNT(TGStateChanges), "在变化发生后执行。控制中心的 Wi-Fi 按钮只会断开当前网络（触发「已断开 Wi-Fi 网络」），Wi-Fi 本身仍然开启。由 Triggr 自身动作引起的变化会忽略一秒钟，以避免动作循环触发。"},
 };
 
 static const TGItem TGHomeButton[] = {
@@ -104,45 +171,45 @@ static const TGGroup TGTriggerGroups[] = {
 };
 
 static const TGItem TGSystemActions[] = {
-    {"system.home", "Go to Home Screen"}, {"system.switcher", "App Switcher"},
-    {"system.lastapp", "Last App"}, {"system.quitapp", "Quit Current App"},
-    {"system.cc", "Control Center"}, {"system.nc", "Notification Center"}, {"system.spotlight", "Spotlight"},
-    {"system.reachability", "Reachability"}, {"system.siri", "Siri"}, {"system.screenshot", "Take Screenshot"},
-    {"system.screenrecord", "Screen Recording"}, {"system.closeapps", "Close Background Apps"},
-    {"system.vibrate", "Vibrate"}, {"system.nothing", "Do Nothing"},
+    {"system.home", "前往主屏幕"}, {"system.switcher", "应用切换器"},
+    {"system.lastapp", "上一个应用"}, {"system.quitapp", "退出当前应用"},
+    {"system.cc", "控制中心"}, {"system.nc", "通知中心"}, {"system.spotlight", "搜索（Spotlight）"},
+    {"system.reachability", "便捷访问"}, {"system.siri", "Siri"}, {"system.screenshot", "截屏"},
+    {"system.screenrecord", "屏幕录制"}, {"system.closeapps", "关闭后台应用"},
+    {"system.vibrate", "震动"}, {"system.nothing", "不做任何事"},
 };
 static const TGItem TGPowerActions[] = {
-    {"system.sleep", "Sleep"}, {"system.lock", "Lock Device"}, {"system.respring", "Respring"}, {"system.powerdown", "Power Off Slider"},
-    {"system.safemode", "Safe Mode"}, {"system.restart", "Restart"}, {"system.poweroff", "Power Off"},
+    {"system.sleep", "睡眠"}, {"system.lock", "锁定设备"}, {"system.respring", "重启主界面（Respring）"}, {"system.powerdown", "关机滑块"},
+    {"system.safemode", "安全模式"}, {"system.restart", "重启"}, {"system.poweroff", "关机"},
 };
 // Switches: toggle.<name>, on.<name>, off.<name> (like Activator's Flipswitch actions).
 // Siri: no safe SpringBoard entry point found yet.
 #define TG_SWITCHES(X) \
-    X("flashlight", "Flashlight") X("wifi", "Wi-Fi") X("bluetooth", "Bluetooth") X("airplane", "Airplane Mode") \
-    X("cellular", "Cellular Data") X("dnd", "Do Not Disturb") X("lowpower", "Low Power Mode") X("rotation", "Rotation Lock") \
-    X("mute", "Mute") X("darkmode", "Dark Mode") X("nightshift", "Night Shift") X("autobrightness", "Auto-Brightness") \
-    X("keepawake", "Keep Screen Awake") X("location", "Location Services")
+    X("flashlight", "手电筒") X("wifi", "Wi-Fi") X("bluetooth", "蓝牙") X("airplane", "飞行模式") \
+    X("cellular", "蜂窝数据") X("dnd", "勿扰模式") X("lowpower", "低电量模式") X("rotation", "旋转锁定") \
+    X("mute", "静音") X("darkmode", "深色模式") X("nightshift", "夜览") X("autobrightness", "自动亮度") \
+    X("keepawake", "保持屏幕点亮") X("location", "定位服务")
 #define TG_SWITCH_NAME(id, name) {id, name},
-#define TG_SWITCH_TOGGLE(id, name) {"toggle." id, "Toggle " name},
-#define TG_SWITCH_ON(id, name) {"on." id, name " On"},
-#define TG_SWITCH_OFF(id, name) {"off." id, name " Off"},
+#define TG_SWITCH_TOGGLE(id, name) {"toggle." id, "切换" name},
+#define TG_SWITCH_ON(id, name) {"on." id, "开启" name},
+#define TG_SWITCH_OFF(id, name) {"off." id, "关闭" name},
 static const TGItem TGSwitches[] = { TG_SWITCHES(TG_SWITCH_NAME) };
 static const TGItem TGToggleActions[] = { TG_SWITCHES(TG_SWITCH_TOGGLE) };
 static const TGItem TGOnActions[] = { TG_SWITCHES(TG_SWITCH_ON) };
 static const TGItem TGOffActions[] = { TG_SWITCHES(TG_SWITCH_OFF) };
 static const TGItem TGMediaActions[] = {
-    {"media.playpause", "Play / Pause"}, {"media.next", "Next Track"}, {"media.previous", "Previous Track"},
-    {"media.volup", "Volume Up"}, {"media.voldown", "Volume Down"},
-    {"media.airplay", "AirPlay Picker"}, {"media.airplayiphone", "Play on iPhone"},
+    {"media.playpause", "播放/暂停"}, {"media.next", "下一曲"}, {"media.previous", "上一曲"},
+    {"media.volup", "音量加"}, {"media.voldown", "音量减"},
+    {"media.airplay", "AirPlay 选择"}, {"media.airplayiphone", "在 iPhone 上播放"},
 };
 
 static const TGGroup TGActionGroups[] = {
-    {"System", TGSystemActions, TG_COUNT(TGSystemActions), NULL},
-    {"Power", TGPowerActions, TG_COUNT(TGPowerActions), NULL},
-    {"Toggle", TGToggleActions, TG_COUNT(TGToggleActions), NULL},
-    {"Turn On", TGOnActions, TG_COUNT(TGOnActions), NULL},
-    {"Turn Off", TGOffActions, TG_COUNT(TGOffActions), NULL},
-    {"Media", TGMediaActions, TG_COUNT(TGMediaActions), NULL},
+    {"系统", TGSystemActions, TG_COUNT(TGSystemActions), NULL},
+    {"电源", TGPowerActions, TG_COUNT(TGPowerActions), NULL},
+    {"切换", TGToggleActions, TG_COUNT(TGToggleActions), NULL},
+    {"开启", TGOnActions, TG_COUNT(TGOnActions), NULL},
+    {"关闭", TGOffActions, TG_COUNT(TGOffActions), NULL},
+    {"媒体", TGMediaActions, TG_COUNT(TGMediaActions), NULL},
 };
 
 // Command actions carry their argument in the id: "<prefix><text>".
@@ -184,10 +251,10 @@ static const TGGroup TGActionGroups[] = {
 
 // Settings pages for "Open Settings Page" (App-prefs:<id>, verified to open Settings on iOS 16.7).
 static const TGItem TGSettingsPages[] = {
-    {"WIFI", "Wi-Fi"}, {"Bluetooth", "Bluetooth"}, {"MOBILE_DATA_SETTINGS_ID", "Cellular"},
-    {"NOTIFICATIONS_ID", "Notifications"}, {"Sounds", "Sounds & Haptics"}, {"General", "General"},
-    {"ControlCenter", "Control Center"}, {"DISPLAY", "Display & Brightness"}, {"Wallpaper", "Wallpaper"},
-    {"BATTERY_USAGE", "Battery"}, {"Privacy", "Privacy & Security"},
+    {"WIFI", "Wi-Fi"}, {"Bluetooth", "蓝牙"}, {"MOBILE_DATA_SETTINGS_ID", "蜂窝网络"},
+    {"NOTIFICATIONS_ID", "通知"}, {"Sounds", "声音与触感"}, {"General", "通用"},
+    {"ControlCenter", "控制中心"}, {"DISPLAY", "显示与亮度"}, {"Wallpaper", "壁纸"},
+    {"BATTERY_USAGE", "电池"}, {"Privacy", "隐私与安全性"},
 };
 #define TGPauseMax 30.0
 
@@ -214,11 +281,11 @@ static inline NSMutableArray<NSString *> *TGTidyPauses(NSArray<NSString *> *acti
 // nothing is assigned to it (nil: nothing, or not a button trigger).
 static inline NSString *TGDefaultActionTitle(NSString *trigger) {
     return @{
-        @"home.single": @"Go Home", @"home.double": @"App Switcher", @"home.triple": @"Accessibility Shortcut",
-        @"home.longhold": @"Siri", @"touchid.doubletap": @"Reachability",
-        @"volume.up": @"Volume Up", @"volume.down": @"Volume Down",
-        @"lock.single": @"Lock", @"lock.longhold": @"Power Off Slider",
-        @"mute.silent": @"Mute", @"mute.ring": @"Unmute", @"mute.toggle": @"Mute / Unmute",
+        @"home.single": @"返回主屏幕", @"home.double": @"应用切换器", @"home.triple": @"辅助功能快捷键",
+        @"home.longhold": @"Siri", @"touchid.doubletap": @"便捷访问",
+        @"volume.up": @"增大音量", @"volume.down": @"减小音量",
+        @"lock.single": @"锁屏", @"lock.longhold": @"关机滑块",
+        @"mute.silent": @"静音", @"mute.ring": @"取消静音", @"mute.toggle": @"静音/取消静音",
     }[trigger];
 }
 
@@ -226,55 +293,55 @@ static inline NSString *TGDefaultActionTitle(NSString *trigger) {
 // the action picker). Button triggers depend on Replace Button Actions.
 static inline NSString *TGTriggerWarning(NSString *trigger, BOOL replaces) {
     NSDictionary *buttons = replaces ? @{
-        @"home.single": @"Runs instead of going Home (or waking) wherever this assignment applies. To go Home as well, add Go to Home Screen.",
-        @"home.double": @"Runs instead of the App Switcher. To open it as well, add App Switcher.",
-        @"touchid.doubletap": @"Runs instead of Reachability (the light double tap). To keep it, add Reachability.",
-        @"home.triple": @"Runs instead of the Accessibility Shortcut, and double presses wait a moment to see if a third follows.",
-        @"home.longhold": @"Runs instead of Siri. To keep Siri, add Siri.",
-        @"volume.up": @"Runs instead of turning the volume up. To change it as well, add Volume Up (Media).",
-        @"volume.down": @"Runs instead of turning the volume down. To change it as well, add Volume Down (Media).",
-        @"volume.both": @"Hold one volume button and press the other. The second button won't change the volume; the first may still move it one step.",
-        @"volume.bothhold": @"Both volume buttons held for 0.5 s. The second button won't change the volume; the first may still move it one step.",
-        @"lock.single": @"Runs instead of locking while the screen is on. To lock as well, add Sleep.",
-        @"lock.double": @"Single presses wait a moment to see if another follows.",
-        @"lock.triple": @"Single and double presses wait a moment to see if another follows.",
-        @"lock.longhold": @"Runs instead of the power-off slider. To show it as well, add Power Off Slider.",
-        @"mute.silent": @"Runs instead of muting, so the ringer stays on. To mute as well, add Mute On (Switches).",
-        @"mute.ring": @"Runs instead of unmuting, so the ringer stays off. To unmute as well, add Mute Off (Switches).",
-        @"mute.toggle": @"Runs instead of muting or unmuting. To change it as well, add Toggle Mute (Switches).",
+        @"home.single": @"将代替原本返回主屏幕（或唤醒）的操作。若也要返回主屏幕，请同时添加「前往主屏幕」。",
+        @"home.double": @"将代替原本的应用切换器。要同时打开它，请添加「应用切换器」。",
+        @"touchid.doubletap": @"将代替便捷访问（轻轻点按两下）。要保留它，请添加「便捷访问」。",
+        @"home.triple": @"将代替辅助功能快捷键，双击时会稍作等待以确认是否会有第三下。",
+        @"home.longhold": @"将代替 Siri。要保留 Siri，请添加「Siri」。",
+        @"volume.up": @"将代替增大音量。若也要改变音量，请添加「音量加（媒体）」。",
+        @"volume.down": @"将代替减小音量。若也要改变音量，请添加「音量减（媒体）」。",
+        @"volume.both": @"按住一个音量键并按下另一个。第二次按下的键不会改变音量；第一个键仍可能微调一步音量。",
+        @"volume.bothhold": @"两个音量键同时按住 0.5 秒。第二个键不会改变音量；第一个键仍可能微调一步音量。",
+        @"lock.single": @"在屏幕点亮时，将代替原本的锁屏操作。若也要锁屏，请添加「睡眠」。",
+        @"lock.double": @"单击会稍作等待，以确认是否会有第二次按动。",
+        @"lock.triple": @"单击与双击都会稍作等待，以确认是否会有第三次按动。",
+        @"lock.longhold": @"将代替关机滑块。若也要显示它，请添加「关机滑块」。",
+        @"mute.silent": @"将代替静音，因此铃声音量保持开启。若也要静音，请添加「关闭静音（开关）」。",
+        @"mute.ring": @"将代替取消静音，因此铃声音量保持关闭。若也要取消静音，请添加「开启静音（开关）」。",
+        @"mute.toggle": @"将代替原本的静音或取消静音操作。若也要改变静音状态，请添加「切换静音（开关）」。",
     } : @{
-        @"home.single": @"Runs alongside the normal press, which still goes Home.",
-        @"home.double": @"Runs alongside the App Switcher.",
-        @"touchid.doubletap": @"Runs alongside Reachability.",
-        @"home.triple": @"Runs alongside the Accessibility Shortcut.",
-        @"home.longhold": @"Runs alongside Siri.",
-        @"volume.up": @"Runs alongside the volume change.",
-        @"volume.down": @"Runs alongside the volume change.",
-        @"volume.both": @"Hold one volume button and press the other. Both still change the volume.",
-        @"volume.bothhold": @"Both volume buttons held for 0.5 s. Both still change the volume.",
-        @"lock.single": @"Runs alongside every press, which still locks.",
-        @"lock.double": @"Runs after the presses stop; each press still locks or wakes.",
-        @"lock.triple": @"Runs after the presses stop; each press still locks or wakes.",
-        @"lock.longhold": @"Runs alongside the power-off slider.",
-        @"mute.silent": @"Runs alongside the switch, which still mutes.",
-        @"mute.ring": @"Runs alongside the switch, which still unmutes.",
-        @"mute.toggle": @"Runs alongside the switch, which still mutes and unmutes.",
+        @"home.single": @"与原本的按动一起执行，仍然会返回主屏幕。",
+        @"home.double": @"与应用切换器一起执行。",
+        @"touchid.doubletap": @"与便捷访问一起执行。",
+        @"home.triple": @"与辅助功能快捷键一起执行。",
+        @"home.longhold": @"与 Siri 一起执行。",
+        @"volume.up": @"与音量变化一起执行。",
+        @"volume.down": @"与音量变化一起执行。",
+        @"volume.both": @"按住一个音量键并按下另一个。两个键仍会改变音量。",
+        @"volume.bothhold": @"两个音量键同时按住 0.5 秒。两个键仍会改变音量。",
+        @"lock.single": @"与每次按动一起执行，仍然会锁屏。",
+        @"lock.double": @"在连续按动结束后执行；每次按动仍会锁屏或唤醒。",
+        @"lock.triple": @"在连续按动结束后执行；每次按动仍会锁屏或唤醒。",
+        @"lock.longhold": @"与关机滑块一起执行。",
+        @"mute.silent": @"与开关一起执行，仍然会静音。",
+        @"mute.ring": @"与开关一起执行，仍然会取消静音。",
+        @"mute.toggle": @"与开关一起执行，仍然会切换静音与响铃。",
     };
-    if (buttons[trigger]) return replaces ? buttons[trigger] : [buttons[trigger] stringByAppendingString:@" To run instead, turn on Replace Button Actions in Options."];
+    if (buttons[trigger]) return replaces ? buttons[trigger] : [buttons[trigger] stringByAppendingString:@" 若要改为代替，请在「选项」中开启「替换按键操作」。"];
     NSDictionary *warnings = @{
-        @"home.shorthold": @"A hold that's released before Siri appears.",
-        @"volume.uphold": @"Runs after holding for 0.5 s; the volume still changes by one step.",
-        @"volume.downhold": @"Runs after holding for 0.5 s; the volume still changes by one step.",
-        @"icon.flickleft": @"A swipe to the next page that starts on an icon runs this instead. Swipe between icons to change pages.",
-        @"icon.flickright": @"A swipe to the previous page that starts on an icon runs this instead. Swipe between icons to change pages.",
-        @"icon.flickdown": @"A swipe down for Search that starts on an icon runs this instead.",
-        @"volume.updown": @"Press Up, then Down within half a second. Runs alongside the two presses.",
-        @"volume.downup": @"Press Down, then Up within half a second. Runs alongside the two presses.",
-        @"time": @"Runs at this time while Triggr is running. iOS can delay timers while the phone sleeps; if it's more than 5 minutes late, it's skipped.",
-        @"battery": @"Runs once when the level passes this percentage, not on every change.",
-        @"statusbar.tap": @"If Double Tap is also assigned, single taps wait a moment to see if a second follows.",
-        @"statusbar.left.tap": @"If Left Double Tap (or Double Tap) is also assigned, single taps wait a moment to see if a second follows.",
-        @"statusbar.right.tap": @"If Right Double Tap (or Double Tap) is also assigned, single taps wait a moment to see if a second follows.",
+        @"home.shorthold": @"按住后在 Siri 出现前松手。",
+        @"volume.uphold": @"按住 0.5 秒后执行；音量仍会改变一步。",
+        @"volume.downhold": @"按住 0.5 秒后执行；音量仍会改变一步。",
+        @"icon.flickleft": @"从图标上开始、向下一页滑动的手势，将执行此操作以代替翻页。在图标之间滑动即可换页。",
+        @"icon.flickright": @"从图标上开始、向上一页滑动的手势，将执行此操作以代替翻页。在图标之间滑动即可换页。",
+        @"icon.flickdown": @"从图标上开始、向下滑动呼出搜索的手势，将执行此操作以代替搜索。",
+        @"volume.updown": @"在半秒内先按音量加、再按音量减。与两次按动一起执行。",
+        @"volume.downup": @"在半秒内先按音量减、再按音量加。与两次按动一起执行。",
+        @"time": @"在 Triggr 运行时，于该时间点执行。iOS 在手机休眠时可能延迟定时器；若迟到超过 5 分钟则会跳过本次。",
+        @"battery": @"在电量经过该百分比时执行一次，而非每次变化都执行。",
+        @"statusbar.tap": @"若也分配了双击，单击会稍作等待以确认是否会有第二次点按。",
+        @"statusbar.left.tap": @"若也分配了左侧双击（或双击），单击会稍作等待以确认是否会有第二次点按。",
+        @"statusbar.right.tap": @"若也分配了右侧双击（或双击），单击会稍作等待以确认是否会有第二次点按。",
     };
     if ([trigger hasPrefix:TGTimePrefix]) return warnings[@"time"];
     if ([trigger hasPrefix:@"icon.flick"] && [trigger containsString:@":"]) return warnings[[trigger componentsSeparatedByString:@":"].firstObject];
@@ -300,9 +367,9 @@ static inline BOOL TGIsCustomTrigger(NSString *trigger) {
 }
 
 static inline NSString *TGDaysTitle(NSString *days) {
-    if ([days isEqualToString:@"weekdays"]) return @"Weekdays";
-    if ([days isEqualToString:@"weekends"]) return @"Weekends";
-    return @"Every Day";
+    if ([days isEqualToString:@"weekdays"]) return @"工作日";
+    if ([days isEqualToString:@"weekends"]) return @"周末";
+    return @"每天";
 }
 
 // "time:0730:weekdays" -> hour 7, minute 30, days "weekdays"; NO if malformed.
@@ -326,15 +393,15 @@ static inline NSString *TGFlickDirectionTitle(NSString *trigger) {
 static inline NSString *TGCustomTriggerTitle(NSString *trigger) {
     NSString *value = nil;
     for (NSString *prefix in TGCustomPrefixes()) if ([trigger hasPrefix:prefix]) value = [trigger substringFromIndex:prefix.length];
-    if ([trigger hasPrefix:TGWiFiJoinedPrefix]) return [NSString stringWithFormat:@"Joined \u201c%@\u201d", value];
-    if ([trigger hasPrefix:TGWiFiLeftPrefix]) return [NSString stringWithFormat:@"Left \u201c%@\u201d", value];
-    if ([trigger hasPrefix:TGBTConnectedPrefix]) return [NSString stringWithFormat:@"Connected to \u201c%@\u201d", value];
-    if ([trigger hasPrefix:TGBTDisconnectedPrefix]) return [NSString stringWithFormat:@"Disconnected from \u201c%@\u201d", value];
-    if ([trigger hasPrefix:TGBatteryAbovePrefix]) return [NSString stringWithFormat:@"Battery Rises Above %@%%", value];
-    if ([trigger hasPrefix:TGBatteryBelowPrefix]) return [NSString stringWithFormat:@"Battery Drops Below %@%%", value];
-    if ([trigger hasPrefix:TGAppLaunchedPrefix]) return [@"Opened " stringByAppendingString:value];
-    if ([trigger hasPrefix:TGNotificationAppPrefix]) return [@"Notification from " stringByAppendingString:value];
-    if ([trigger hasPrefix:@"icon.flick"]) return [NSString stringWithFormat:@"%@ on %@", TGFlickDirectionTitle(trigger), value];
+    if ([trigger hasPrefix:TGWiFiJoinedPrefix]) return [NSString stringWithFormat:@"已加入「%@」", value];
+    if ([trigger hasPrefix:TGWiFiLeftPrefix]) return [NSString stringWithFormat:@"已离开「%@」", value];
+    if ([trigger hasPrefix:TGBTConnectedPrefix]) return [NSString stringWithFormat:@"已连接「%@」", value];
+    if ([trigger hasPrefix:TGBTDisconnectedPrefix]) return [NSString stringWithFormat:@"已断开「%@」", value];
+    if ([trigger hasPrefix:TGBatteryAbovePrefix]) return [NSString stringWithFormat:@"电量上升到 %@%%", value];
+    if ([trigger hasPrefix:TGBatteryBelowPrefix]) return [NSString stringWithFormat:@"电量下降到 %@%%", value];
+    if ([trigger hasPrefix:TGAppLaunchedPrefix]) return [@"打开 " stringByAppendingString:value];
+    if ([trigger hasPrefix:TGNotificationAppPrefix]) return [@"收到来自 " stringByAppendingString:value];
+    if ([trigger hasPrefix:@"icon.flick"]) return [NSString stringWithFormat:@"在 %@ 上%@", value, TGFlickDirectionTitle(trigger)];
     int hour, minute;
     NSString *days;
     if (TGParseTime(trigger, &hour, &minute, &days)) return [NSString stringWithFormat:@"%02d:%02d %@", hour, minute, TGDaysTitle(days)];
@@ -348,9 +415,9 @@ static inline NSString *TGTriggerTitle(NSString *trigger) {
             if ([trigger isEqualToString:@(TGTriggerGroups[g].items[i].identifier)]) {
                 // Events ("Charger Connected") read fine alone; presses need their button.
                 BOOL event = TGTriggerGroups[g].items == TGOther || TGTriggerGroups[g].items == TGStateChanges || TGTriggerGroups[g].items == TGMotion;
-                if (TGTriggerGroups[g].items == TGIcons) return [NSString stringWithFormat:@"Icon %s", TGTriggerGroups[g].items[i].title];
-                if (TGTriggerGroups[g].items == TGHomeGestures) return [NSString stringWithFormat:@"Home Screen %s", TGTriggerGroups[g].items[i].title];
-                return event ? @(TGTriggerGroups[g].items[i].title) : [NSString stringWithFormat:@"%s %s", TGTriggerGroups[g].title, TGTriggerGroups[g].items[i].title];
+                if (TGTriggerGroups[g].items == TGIcons) return [NSString stringWithFormat:@"图标%@", @(TGTriggerGroups[g].items[i].title)];
+                if (TGTriggerGroups[g].items == TGHomeGestures) return [NSString stringWithFormat:@"主屏幕%@", @(TGTriggerGroups[g].items[i].title)];
+                return event ? @(TGTriggerGroups[g].items[i].title) : [NSString stringWithFormat:@"%@：%@", @(TGTriggerGroups[g].title), @(TGTriggerGroups[g].items[i].title)];
             }
     return trigger;
 }
@@ -442,29 +509,29 @@ static inline NSArray<NSString *> *TGExtensionAction(NSString *action) {
 
 // Display title for an action id ("None" when unassigned).
 static inline NSString *TGActionTitle(NSString *action) {
-    if (action.length == 0) return @"None";
+    if (action.length == 0) return @"无";
     NSArray *extension = TGExtensionAction(action);
     if (extension) {
         id title = TGExtension(extension[0])[@"ItemTitle"];
         return [NSString stringWithFormat:@"%@: %@", [title isKindOfClass:NSString.class] ? title : extension[0], extension[1]];
     }
-    if ([action hasPrefix:TGShortcutPrefix]) return [@"Shortcut: " stringByAppendingString:[action substringFromIndex:TGShortcutPrefix.length]];
-    if ([action hasPrefix:TGURLPrefix]) return [@"URL: " stringByAppendingString:[action substringFromIndex:TGURLPrefix.length]];
-    if ([action hasPrefix:TGShellPrefix]) return [@"Command: " stringByAppendingString:[action substringFromIndex:TGShellPrefix.length]];
-    if ([action hasPrefix:TGAppPrefix]) return [@"Open " stringByAppendingString:[action substringFromIndex:TGAppPrefix.length]];
-    if ([action hasPrefix:TGPausePrefix]) return [NSString stringWithFormat:@"Pause %@ s", [action substringFromIndex:TGPausePrefix.length]];
-    if ([action hasPrefix:TGMenuPrefix]) return @"Menu";
-    if ([action hasPrefix:TGBrightnessPrefix]) return [NSString stringWithFormat:@"Brightness %@%%", [action substringFromIndex:TGBrightnessPrefix.length]];
-    if ([action hasPrefix:TGMediaVolumePrefix]) return [NSString stringWithFormat:@"Media Volume %@%%", [action substringFromIndex:TGMediaVolumePrefix.length]];
-    if ([action hasPrefix:TGRingerVolumePrefix]) return [NSString stringWithFormat:@"Ringer Volume %@%%", [action substringFromIndex:TGRingerVolumePrefix.length]];
-    if ([action hasPrefix:TGMessagePrefix]) return [@"Message: " stringByAppendingString:[action substringFromIndex:TGMessagePrefix.length]];
-    if ([action hasPrefix:TGSpeakPrefix]) return [@"Say: " stringByAppendingString:[action substringFromIndex:TGSpeakPrefix.length]];
-    if ([action hasPrefix:TGAirPlayPrefix]) return [@"AirPlay to " stringByAppendingString:[action substringFromIndex:TGAirPlayPrefix.length]];
+    if ([action hasPrefix:TGShortcutPrefix]) return [@"捷径：" stringByAppendingString:[action substringFromIndex:TGShortcutPrefix.length]];
+    if ([action hasPrefix:TGURLPrefix]) return [@"URL：" stringByAppendingString:[action substringFromIndex:TGURLPrefix.length]];
+    if ([action hasPrefix:TGShellPrefix]) return [@"命令：" stringByAppendingString:[action substringFromIndex:TGShellPrefix.length]];
+    if ([action hasPrefix:TGAppPrefix]) return [@"打开 " stringByAppendingString:[action substringFromIndex:TGAppPrefix.length]];
+    if ([action hasPrefix:TGPausePrefix]) return [NSString stringWithFormat:@"暂停 %@ 秒", [action substringFromIndex:TGPausePrefix.length]];
+    if ([action hasPrefix:TGMenuPrefix]) return @"菜单";
+    if ([action hasPrefix:TGBrightnessPrefix]) return [NSString stringWithFormat:@"亮度 %@%%", [action substringFromIndex:TGBrightnessPrefix.length]];
+    if ([action hasPrefix:TGMediaVolumePrefix]) return [NSString stringWithFormat:@"媒体音量 %@%%", [action substringFromIndex:TGMediaVolumePrefix.length]];
+    if ([action hasPrefix:TGRingerVolumePrefix]) return [NSString stringWithFormat:@"铃声音量 %@%%", [action substringFromIndex:TGRingerVolumePrefix.length]];
+    if ([action hasPrefix:TGMessagePrefix]) return [@"消息：" stringByAppendingString:[action substringFromIndex:TGMessagePrefix.length]];
+    if ([action hasPrefix:TGSpeakPrefix]) return [@"朗读：" stringByAppendingString:[action substringFromIndex:TGSpeakPrefix.length]];
+    if ([action hasPrefix:TGAirPlayPrefix]) return [@"AirPlay 到 " stringByAppendingString:[action substringFromIndex:TGAirPlayPrefix.length]];
     if ([action hasPrefix:TGSettingsPrefix]) {
         NSString *page = [action substringFromIndex:TGSettingsPrefix.length];
         for (int i = 0; i < TG_COUNT(TGSettingsPages); i++)
-            if ([page isEqualToString:@(TGSettingsPages[i].identifier)]) return [@"Settings: " stringByAppendingString:@(TGSettingsPages[i].title)];
-        return [@"Settings: " stringByAppendingString:page];
+            if ([page isEqualToString:@(TGSettingsPages[i].identifier)]) return [@"设置：" stringByAppendingString:@(TGSettingsPages[i].title)];
+        return [@"设置：" stringByAppendingString:page];
     }
     for (int g = 0; g < TG_COUNT(TGActionGroups); g++)
         for (int i = 0; i < TGActionGroups[g].count; i++)

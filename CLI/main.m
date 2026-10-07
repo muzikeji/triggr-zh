@@ -13,10 +13,10 @@ static id TGSetting(NSString *key) {
 
 static int TGUsage(void) {
     fprintf(stderr,
-        "usage: triggr run <action>        run a built-in action (see: triggr list)\n"
-        "       triggr trigger <trigger>   run what's assigned to a trigger\n"
-        "       triggr menu <name>         show one of your menus\n"
-        "       triggr list                list actions and triggers\n");
+        "用法: triggr run <操作>        运行一个内置操作（参见: triggr list）\n"
+        "      triggr trigger <触发器>  运行分配给某触发器的操作\n"
+        "      triggr menu <名称>       显示你的一个菜单\n"
+        "      triggr list              列出所有操作和触发器\n");
     return 64;
 }
 
@@ -30,7 +30,7 @@ static void TGPrint(const TGGroup *groups, int count) {
 static int TGPost(NSString *name) {
     uint32_t status = notify_post([@TGAPIPrefix stringByAppendingString:name].UTF8String);
     if (status != NOTIFY_STATUS_OK) {
-        fprintf(stderr, "triggr: couldn't send (notify status %u)\n", status);
+        fprintf(stderr, "triggr: 无法发送（notify 状态 %u）\n", status);
         return 1;
     }
     return 0;
@@ -41,16 +41,16 @@ int main(int argc, char *argv[]) {
         if (argc < 2) return TGUsage();
         NSString *command = @(argv[1]);
         if ([command isEqualToString:@"list"]) {
-            printf("Actions (triggr run <action>):\n");
+            printf("操作（triggr run <操作>）:\n");
             TGPrint(TGActionGroups, TG_COUNT(TGActionGroups));
-            printf("\nTriggers (triggr trigger <trigger>; runs only if assigned):\n");
+            printf("\n触发器（triggr trigger <触发器>; 仅在已分配时运行）:\n");
             TGPrint(TGTriggerGroups, TG_COUNT(TGTriggerGroups));
             return 0;
         }
         if (argc < 3) return TGUsage();
         NSString *value = @(argv[2]);
         if (![TGSetting(TGAllowAPIKey) boolValue]) {
-            fprintf(stderr, "triggr: turn on Settings → Triggr → Allow API first.\n");
+            fprintf(stderr, "triggr: 请先在 设置 → Triggr → 允许 API 中开启此功能。\n");
             return 1;
         }
         if ([command isEqualToString:@"run"]) {
@@ -59,14 +59,14 @@ int main(int argc, char *argv[]) {
                 for (int i = 0; i < TGActionGroups[g].count; i++)
                     if ([value isEqualToString:@(TGActionGroups[g].items[i].identifier)]) known = YES;
             if (!known) {
-                fprintf(stderr, "triggr: unknown action '%s' (see: triggr list)\n", argv[2]);
+                fprintf(stderr, "triggr: 未知操作 '%s'（参见: triggr list）\n", argv[2]);
                 return 1;
             }
             return TGPost([@"run/" stringByAppendingString:value]);
         }
         if ([command isEqualToString:@"trigger"]) {
             if (!TGIsKnownTrigger(value)) {
-                fprintf(stderr, "triggr: unknown trigger '%s' (see: triggr list)\n", argv[2]);
+                fprintf(stderr, "triggr: 未知触发器 '%s'（参见: triggr list）\n", argv[2]);
                 return 1;
             }
             return TGPost([@"trigger/" stringByAppendingString:value]);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
             for (id menu in [menus isKindOfClass:NSArray.class] ? menus : @[])
                 if ([menu isKindOfClass:NSDictionary.class] && [[menu[@"name"] description] caseInsensitiveCompare:value] == NSOrderedSame)
                     return TGPost([@"menu/" stringByAppendingString:[menu[@"id"] description]]);
-            fprintf(stderr, "triggr: no menu named '%s'\n", argv[2]);
+            fprintf(stderr, "triggr: 不存在名为 '%s' 的菜单\n", argv[2]);
             return 1;
         }
         return TGUsage();

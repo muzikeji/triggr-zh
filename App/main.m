@@ -42,7 +42,7 @@ static UIViewController *TGMessage(NSString *text) {
         Class rootClass = NSClassFromString(@"TGRootListController");
         root = [rootClass new];
     }
-    if (!root) root = TGMessage(@"Triggr's settings couldn't be loaded. Reinstall Triggr from your package manager.");
+    if (!root) root = TGMessage(@"无法加载 Triggr 的设置。请通过你的软件包管理器重新安装 Triggr。");
     root.title = @"Triggr";
     UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:root];
     navigation.navigationBar.prefersLargeTitles = YES;

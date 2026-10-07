@@ -1,8 +1,8 @@
 <h1 align="center">Triggr</h1>
 
 <p align="center">
-  <b>Activator-style triggers for modern jailbreaks.</b><br>
-  Rootless Dopamine · iOS 15–18 · arm64 & arm64e · Touch ID and Face ID
+  <b>针对现代越狱环境的 Activator 风格触发器。</b><br>
+  Rootless Dopamine · iOS 15–18 · arm64 与 arm64e · 触控 ID 与人脸识别
 </p>
 
 <p align="center">
@@ -11,280 +11,260 @@
   <img src="https://img.shields.io/badge/version-1.0.4.1-informational" alt="Version 1.0.4.1">
 </p>
 
-Press, tap, flick, pinch, shake or wave, and Triggr runs what you picked: go
-Home, toggle the flashlight, open an app, run a Shortcut or a whole sequence of
-actions. Assign it once in **Settings → Triggr** or the **Triggr app**, and it
-works where you want it: everywhere, on the Home Screen, in apps, on the Lock
-Screen, or inside one specific app.
+按下、轻点、轻扫、捏合、甩动或挥动，Triggr 就会执行你选定的内容：回到主
+屏幕、切换手电筒、打开应用、运行快捷指令或一整串操作。在 **设置 → Triggr**
+或 **Triggr 应用**中分配一次，它就能在你需要的地方生效：任意位置、主屏幕、
+应用内、锁屏时，或某个特定应用内部。
 
 <p>
-  <img src="screenshots/1-main.png" alt="Main page with trigger search" width="200">
-  <img src="screenshots/2-place.png" alt="A place: Assigned, then every kind of trigger" width="200">
-  <img src="screenshots/3-assigned.png" alt="Assigned: tap to change, swipe to remove, Remove All" width="200">
-  <img src="screenshots/4-statusbar.png" alt="Status Bar triggers, with left / right halves and swipes" width="200">
-  <img src="screenshots/5-picker.png" alt="Action picker: Selected, Recently Used, categories, Test" width="200">
-  <img src="screenshots/6-apps.png" alt="In Specific Apps" width="200">
-  <img src="screenshots/7-app.png" alt="One app's own triggers" width="200">
-  <img src="screenshots/8-options.png" alt="Options" width="200">
+  <img src="screenshots/1-main.png" alt="带触发器搜索的主页面" width="200">
+  <img src="screenshots/2-place.png" alt="一个位置：已分配，然后是各类触发器" width="200">
+  <img src="screenshots/3-assigned.png" alt="已分配：轻点更改、轻扫移除、全部移除" width="200">
+  <img src="screenshots/4-statusbar.png" alt="状态栏触发器，含左/右半侧与轻扫" width="200">
+  <img src="screenshots/5-picker.png" alt="操作选择器：已选、最近使用、分类、测试" width="200">
+  <img src="screenshots/6-apps.png" alt="在特定应用中" width="200">
+  <img src="screenshots/7-app.png" alt="单个应用自己的触发器" width="200">
+  <img src="screenshots/8-options.png" alt="选项" width="200">
 </p>
 
-## Why Triggr
+## 为什么选择 Triggr
 
-- **Lightweight.** The main library loads into SpringBoard only. Apps get a tiny
-  relay that links nothing but UIKit and stays silent unless a status bar or
-  shake trigger is assigned. There's no web server and no polling; the small
-  helper that runs commands on iOS 18 sleeps until one is needed.
-- **Efficient by design.** Every hook checks the set of assigned triggers first
-  and returns at once if its trigger isn't used. Event observers, timers, gesture
-  recognizers, the proximity sensor and the API only exist while something is
-  assigned to them. Settings changes arrive by notification; nothing is polled.
-- **Private and safe.** Nothing listens on the network. The optional API is local,
-  off by default, and can only run your own assignments, menus and built-in
-  actions. Commands only ever run what's in your own setup. Notification triggers
-  see which app posted, never what it says.
-- **Made for today's iOS.** Tested on iOS 15, 16, 17 and 18, on A10 to A13, Touch
-  ID and Face ID. On Face ID iPhones the side button is fully supported, including
-  replacing Wallet and the Accessibility Shortcut, and commands keep working on
-  iOS 18, where SpringBoard can no longer start programs itself.
-- **Familiar.** Laid out like Activator: places, triggers and an action picker,
-  with search, Recently Used and a Test button on top.
-- **Respectful of iOS.** Unassigned buttons do exactly what they always did,
-  waking the phone always works, and Emergency SOS is never touched.
-- **Extensible.** Other packages can add their own actions with a single plist
-  ([EXTENSIONS.md](EXTENSIONS.md)), like EQELinker's EQE presets.
-- **Open source** under GPL-3.0.
+- **轻量。** 主库只载入 SpringBoard。应用只获得一个微小的 relay，它只链接
+  UIKit，并且不分配状态栏或摇动触发器时保持静默。没有 Web 服务器，也不做轮询；
+  那个在 iOS 18 上运行命令的小助手在需要之前一直休眠。
+- **设计高效。** 每个钩子先检查已分配的触发器集合，如果它对应的触发器未被使用
+  则立即返回。事件观察者、计时器、手势识别器、距离传感器和 API 只有在有东西
+  分配给它时才存在。设置变化通过通知到达；没有任何轮询。
+- **私密且安全。** 不监听任何网络。可选 API 是本地、默认关闭的，只能运行你自己的
+  分配、菜单和内建操作。命令只执行你自己配置里的内容。通知触发器只看到是哪个
+  应用发布的，永远不会看到内容。
+- **为今天的 iOS 而生。** 已在 iOS 15、16、17 和 18、A10 至 A13、触控 ID 和
+  人脸识别上测试。在人脸识别 iPhone 上侧边按钮获得完整支持，包括替换 Wallet 和
+  辅助功能快捷键；命令在 iOS 18 上仍然可用，那里的 SpringBoard 已无法自行启动程序。
+- **熟悉。** 布局与 Activator 一致：位置、触发器和操作选择器，顶部带搜索、
+  最近使用和测试按钮。
+- **尊重 iOS。** 未分配的按键完全保持原有功能，唤醒手机始终有效，紧急 SOS
+  永远不会被触碰。
+- **可扩展。** 其他软件包可以用一个 plist 添加自己的操作
+  （[EXTENSIONS.md](EXTENSIONS.md)），例如 EQELinker 的 EQE 预设。
+- **开源**，以 GPL-3.0 许可发布。
 
-## Install
+## 安装
 
-1. Add **https://jond-ie.github.io/repo/** to Sileo or Zebra (or open the link on
-   your device and tap **Add to Sileo** / **Add to Zebra**).
-2. Install **Triggr**. AltList and PreferenceLoader come with it.
-3. Respring, then open **Triggr** from your Home Screen or **Settings → Triggr**.
+1. 将 **https://jond-ie.github.io/repo/** 添加到 Sileo 或 Zebra（或在设备上打开该
+   链接并轻点 **Add to Sileo** / **Add to Zebra**）。
+2. 安装 **Triggr**。AltList 和 PreferenceLoader 会随它一起安装。
+3. 注销，然后从主屏幕或 **设置 → Triggr** 打开 **Triggr**。
 
-## Features at a glance
+## 功能一览
 
 | | |
 |---|---|
-| **Buttons** | Home (single, double, triple, short / long hold), Lock / Side (single, double, triple, hold), Volume (presses, holds, sequences, both), Mute switch, Touch ID |
-| **Status bar** | Tap, double tap, hold, each also per left / right half; swipe left / right |
-| **Home Screen** | Icon flicks (per app too), pinch, spread, two-finger swipes, double tap on empty space |
-| **Sensors** | Shake, proximity cover and wave |
-| **Events** | Charger, headphones, Wi-Fi, Bluetooth, Low Power, lock / unlock, screen on / off, a specific network or device, battery level, an app opened, a notification from an app, a time of day |
-| **Actions** | System and power actions, 14 switches (toggle / on / off), media and AirPlay, brightness and volume levels, open apps, Settings pages, Shortcuts and URLs, messages, speech, shell commands, menus, extensions |
-| **Places** | Anywhere, At Home Screen, In Apps, At Lock Screen, In Specific Apps |
-| **Extras** | Sequences with pauses, menus, profiles, export / import, block list, action banners, local API and `triggr` command |
+| **按键** | 主屏幕按钮（单击、双击、三击、短按 / 长按），锁屏/侧边按钮（单击、双击、三击、按住），音量按键（短按、长按、连按、同时按下），静音开关，触控 ID |
+| **状态栏** | 轻点、双击、按住，每种同样支持左 / 右半侧；向左 / 向右轻扫 |
+| **主屏幕** | 图标轻拂（也支持按应用）、捏合、张开、双指轻扫、在空白处双击 |
+| **传感器** | 摇动、距离遮挡与挥手 |
+| **事件** | 充电器、耳机、Wi-Fi、蓝牙、低电量、锁定 / 解锁、屏幕开 / 关、特定网络或设备、电量百分比、某个应用被打开、来自某应用的通知、一天中的某个时刻 |
+| **操作** | 系统与电源操作、14 个开关（切换 / 开启 / 关闭）、媒体与 AirPlay、亮度与音量级别、打开应用、设置页面、快捷指令与 URL、消息、语音、shell 命令、菜单、扩展 |
+| **位置** | 任意位置、主屏幕、在应用内、锁屏时、在特定应用中 |
+| **附加** | 带停顿的序列、菜单、配置文件、导出 / 导入、阻止列表、操作横幅、本地 API 与 `triggr` 命令 |
 
-## Tested devices
+## 已测试设备
 
-Triggr supports every arm64 and arm64e iPhone and iPad on iOS 15–18 with a
-rootless jailbreak (Dopamine). It has been tested on:
+Triggr 支持所有运行 iOS 15–18、采用 rootless 越狱（Dopamine）的 arm64 与
+arm64e iPhone 和 iPad。已在以下设备上测试：
 
-| Chip | Architecture | Buttons | iOS |
+| 芯片 | 架构 | 按键 | iOS |
 |---|---|---|---|
-| A10 | arm64 | Home button / Touch ID | 15.8.6 |
-| A11 | arm64 | Home button / Touch ID | 16.7 |
-| A13 | arm64e | Home button / Touch ID | 17.5.1 |
-| A13 | arm64e | Face ID | 18.6.2 |
+| A10 | arm64 | 主屏幕按钮 / 触控 ID | 15.8.6 |
+| A11 | arm64 | 主屏幕按钮 / 触控 ID | 16.7 |
+| A13 | arm64e | 主屏幕按钮 / 触控 ID | 17.5.1 |
+| A13 | arm64e | 人脸识别 | 18.6.2 |
 
-On Face ID devices the Home button and Touch ID groups are hidden and the lock
-button is the **Side Button**. If anything ever lands you in safe mode, uninstall
-Triggr from your package manager and please [report it](../../issues/new/choose).
+在人脸识别设备上，主屏幕按钮和触控 ID 分组会隐藏，锁屏按钮便是**侧边按钮**。
+如果任何情况使你进入安全模式，请从软件包管理器卸载 Triggr，并请
+[报告问题](../../issues/new/choose)。
 
-## Documentation
+## 文档
 
-### Getting around
+### 界面导览
 
-- **Main page:** Enabled, the places, In Specific Apps, All Assignments, Menus,
-  Options and Profiles & Sharing. The search field finds any trigger.
-- **A place:** an **Assigned** row (tap to change, swipe to remove, or Remove
-  All), then one row per kind of trigger. A place's assignment replaces
-  Anywhere's for the same trigger.
-- **In Specific Apps:** inside the chosen app its assignments replace In Apps' and
-  Anywhere's; everywhere else nothing changes.
-- **The action picker:** what's picked on top, then Recently Used and the
-  categories, a search field, and **Test** to run it right away.
-- The **Triggr app** shows the same pages as Settings.
+- **主页面：** 已启用、各位置、在特定应用中、全部分配、菜单、
+  选项以及配置文件与共享。搜索框可以找到任何触发器。
+- **一个位置：** 一行**已分配**（轻点更改、轻扫移除，或全部
+  移除），然后每种触发器一行。位置的分配会为同一触发器覆盖任意位置的分配。
+- **在特定应用中：** 在所选应用内部，其分配覆盖在应用内和任意位置的分配；
+  其他位置保持不变。
+- **操作选择器：** 顶部是已选操作，然后是最近使用和分类、一个搜索框，以及
+  **测试**按钮立即运行所选操作。
+- **Triggr 应用**显示与设置相同的页面。
 
-### Triggers
+### 触发器
 
-| Group | Triggers | Behaviour |
+| 分组 | 触发器 | 行为 |
 |---|---|---|
-| Home Button | Single, Double, Triple, Short Hold, Long Hold | Replaces the system press when assigned (see **Replace Button Actions**). If Triple is assigned, a double press waits 0.35 s. |
-| Touch ID | Light Double Tap; Finger Rest, Finger Match (Lock Screen) | Light Double Tap replaces Reachability; Finger Rest and Match run alongside unlocking. |
-| Lock / Side Button | Single, Double, Triple, Hold | See **Lock button** below. On Face ID devices an assigned Double or Triple Press replaces Wallet / Apple Pay or the Accessibility Shortcut. |
-| Volume Buttons | Up, Down, Up Hold, Down Hold, Up then Down, Down then Up, Press Both, Hold Both | A press replaces the volume step; a hold fires after 0.5 s. |
-| Mute Switch | Silent, Ring, Toggled | Replaces muting / unmuting when assigned. |
-| Status Bar | Tap, Double Tap, Hold; Left / Right Tap, Double Tap, Hold; Swipe Left, Swipe Right | Home Screen, Lock Screen and in apps. Left and Right are each half of the bar and run instead of the plain trigger on that side. Single taps can be turned off (**Options → Status Bar Single Tap**); they're off by default on Face ID iPhones, where a tap at the top can start pulling down Control Center. Swiping down stays iOS's. |
-| Home Screen Icons | Flick Up, Down, Left, Right | A quick flick that starts on an app or folder icon. |
-| Home Screen Gestures | Pinch In, Spread, Two-Finger Swipe Up / Down, Double Tap Empty Space | On the Home Screen pages; one-finger scrolling, Spotlight and icons work as before. Ignored while editing or with a folder open. |
-| Motion | Shake Device | iOS's own shake detection: no sensor runs for Triggr. |
-| Proximity Sensor | Cover, Wave | The sensor stays on only while one is assigned and the screen is on. |
-| Charger & Headphones | Charger, Headphones connected / disconnected | Observed only while assigned. |
-| State Changes | Wi-Fi, Bluetooth, Low Power on / off; joined / left a network; Device Locked / Unlocked; Screen On / Off | Changes Triggr causes itself are ignored for a second, so assignments can't loop. |
-| Custom Events | A specific Wi-Fi network, a specific Bluetooth device (connected / disconnected), battery above / below X %, an app opened, **a notification from an app**, a scheduled time, a flick on one app's icon | Networks and devices are picked from your saved ones. Notifications only count which app posted, never what it says. |
+| 主屏幕按钮 | 单击、双击、三击、短按、长按 | 分配时替换系统按键（参见**替换按键操作**）。如果分配了三击，双击需要等待 0.35 秒。 |
+| 触控 ID | 轻触双点；手指静置、手指匹配（锁屏时） | 轻触双点替换单手模式；手指静置和匹配与解锁同时运行。 |
+| 锁屏/侧边按钮 | 单击、双击、三击、按住 | 参见下方**锁屏按钮**。在人脸识别设备上，已分配的双击或三击会替换 Wallet / Apple Pay 或辅助功能快捷键。 |
+| 音量按键 | 上、下、长按上、长按下、先上后下、先下后上、同时按上、同时按上下 | 短按替换音量步进；长按在 0.5 秒后触发。 |
+| 静音开关 | 静音、响铃、切换 | 分配时替换静音 / 取消静音操作。 |
+| 状态栏 | 轻点、双击、按住；左 / 右轻点、双击、按住；向左轻扫、向右轻扫 | 主屏幕、锁屏时和应用内。左侧和右侧各为状态栏的一半，在该侧运行时替代普通触发器。单击可关闭（**选项 → 状态栏单击**）；在人脸识别 iPhone 上默认关闭，因为在那里轻点顶部会开始下拉控制中心。向下轻扫仍归属 iOS。 |
+| 主屏幕图标 | 向上、向下、向左、向右轻拂 | 从应用或文件夹图标上开始的一次快速轻拂。 |
+| 主屏幕手势 | 捏合、张开、双指向上 / 向下轻扫、在空白处双击 | 作用于主屏幕页面；单指滚动、聚焦搜索和图标保持原有功能。编辑中或文件夹打开时被忽略。 |
+| 动作传感器 | 摇动设备 | 使用 iOS 自带的摇动检测：Triggr 不运行任何传感器。 |
+| 距离传感器 | 遮挡、挥手 | 只有在分配了该触发器且屏幕开启时，传感器才会保持开启。 |
+| 充电与耳机 | 充电器、耳机连接 / 断开 | 仅在分配后才会被观察。 |
+| 状态变化 | Wi-Fi、蓝牙、低电量开 / 关；加入 / 离开网络；设备锁定 / 解锁；屏幕开 / 关 | Triggr 自身引发的更改会在一秒内被忽略，因此分配不会循环。 |
+| 自定义事件 | 特定 Wi-Fi 网络、特定蓝牙设备（连接 / 断开）、电量高于 / 低于 X%、某个应用被打开、**来自某应用的通知**、定时时刻、对某个应用图标的轻拂 | 网络和设备从你已保存的中选取。通知只计算是哪个应用发布的，永远不会看内容。 |
 
-### Actions
+### 操作
 
-- **System:** Go to Home Screen, App Switcher, Last App, Quit Current App, Control
-  Center, Notification Center, Spotlight, Reachability, Siri, Take Screenshot,
-  Screen Recording (start / stop, like Control Center's button), Close Background Apps
-  (clears the App Switcher except the app you're in and the one playing audio),
-  Vibrate, and Do Nothing (takes a trigger away from iOS without running anything).
-- **Power:** Sleep (a lock button press: the screen turns off and the phone
-  locks, as the button does), Lock Device (locks but leaves the screen on), Respring,
-  Power Off Slider, Safe Mode, Restart, Power Off. Safe Mode restarts SpringBoard through ElleKit's own Safe Mode (no tweaks,
-  Triggr included) until it's left from the Safe Mode screen. Restart and Power
-  Off act at once, without asking, and the jailbreak stays off until Dopamine is
-  run again; the picker warns before adding any of these.
-- **Switches** (Toggle / Turn On / Turn Off): Flashlight, Wi-Fi, Bluetooth, Airplane
-  Mode, Cellular Data, Do Not Disturb, Low Power Mode, Rotation Lock, Mute, Dark
-  Mode, Night Shift, Auto-Brightness, Keep Screen Awake (until the next respring),
-  Location Services.
-- **Media:** Play/Pause, Next, Previous, Volume Up, Volume Down, AirPlay Picker (the system
-  AirPlay menu), Play on iPhone, and AirPlay To… (a speaker or TV picked from the ones on
-  your network, or typed; Settings asks SpringBoard to find them).
-- **Levels:** Brightness %, Media Volume %, Ringer Volume %.
-- **Open:** an app, a Settings page, a Shortcut, a URL.
-- **Text & Commands:** Show Message, Speak Text, Run Command
-  (`/var/jb/bin/sh -c` as **mobile**, with an explicit PATH; see **triggrd** below).
-- **Menus:** a pop-up list of actions to choose from (Triggr → Menus).
-- **Extensions:** other packages can add their own category of actions (see
-  [EXTENSIONS.md](EXTENSIONS.md)); for example EQELinker adds "EQE Presets".
-- **Recently Used** keeps your last six picked actions one tap away, and the
-  **Test** button (top right) runs what's picked right away.
+- **系统：** 回到主屏幕、应用切换器、上一个应用、退出当前应用、控制
+  中心、通知中心、聚焦搜索、单手模式、Siri、截屏、录屏（开始 / 停止，类似控制中心的按钮）、关闭后台应用
+  （清空应用切换器中除当前应用和正在播放音频的应用以外的所有应用）、
+  震动以及不执行操作（从 iOS 手中拿走一个触发器而不运行任何内容）。
+- **电源：** 休眠（如同按下锁屏按钮：屏幕熄灭并锁定设备，与按下该按钮一致）、锁定设备（锁定但保持屏幕开启）、注销、电源关闭滑块、安全模式、重启、关机。安全模式通过 ElleKit 自带的安全模式重启 SpringBoard（不含任何插件，
+  包括 Triggr），直到从安全模式界面离开。重启和关机
+  立即执行，无需确认，越狱状态保持关闭直到再次运行 Dopamine；选择器在添加其中任意一项前会发出警告。
+- **开关**（切换 / 开启 / 关闭）：手电筒、Wi-Fi、蓝牙、飞行
+  模式、蜂窝数据、勿扰、低电量模式、旋转锁定、静音、深色
+  模式、夜览、自动亮度、保持屏幕点亮（持续到下次注销）、
+  定位服务。
+- **媒体：** 播放 / 暂停、下一首、上一首、音量加、音量减、AirPlay 选择器（系统
+  AirPlay 菜单）、在 iPhone 上播放以及 AirPlay 到…（从你的网络中选择或手动输入
+  扬声器或电视；设置请求 SpringBoard 查找它们）。
+- **级别：** 亮度 %、媒体音量 %、铃声音量 %。
+- **打开：** 一个应用、一个设置页面、一个快捷指令、一个 URL。
+- **文本与命令：** 显示消息、朗读文本、运行命令
+  （以 **mobile** 用户通过 `/var/jb/bin/sh -c` 执行，带显式 PATH；参见下方 **triggrd**）。
+- **菜单：** 一个供选择的弹出式操作列表（Triggr → 菜单）。
+- **扩展：** 其他软件包可以添加自己的操作类别（参见
+  [EXTENSIONS.md](EXTENSIONS.md)）；例如 EQELinker 添加了“EQE Presets”。
+- **最近使用**让你最近选的六个操作一键可取，**测试**按钮（右上角）立即运行当前所选。
 
-Tick several actions to run them in order. **Order & Pauses** reorders them and
-adds pauses between them. Tap an action there to add a pause after it. Pauses
-left dangling after an action is removed are cleared automatically. Adding an
-action that conflicts with the list shows a warning: something after Respring,
-Toggle and On/Off for the same switch, or two full-screen panels without a pause.
-If a switch is the only action picked, picking another of its options (say Toggle
-after Flashlight On) replaces it instead.
+勾选多个操作可按顺序运行。**顺序与停顿**可重新排序并在其间
+加入停顿。点击某个操作可在其后添加停顿。操作被移除后遗留的多余停顿会自动清除。添加
+与列表冲突的操作时会显示警告：已在注销后的操作、同一开关的切换和开 / 关、
+或两个互无停顿的全屏面板。如果列表只选了同一个开关的某个选项，再选它的另一选项
+（例如在手电筒开启后选择切换）会替换前者。
 
-### Replace Button Actions
+### 替换按键操作
 
-**Options → Replace Button Actions** (on by default) decides what an assigned
-button press does to the button's own action:
+**选项 → 替换按键操作**（默认开启）决定已分配的按键按下时对按键自身操作的处置：
 
-- **On:** it runs instead, like Activator: an assigned Home press doesn't go Home,
-  an assigned volume press doesn't change the volume, an assigned lock press
-  doesn't lock, an assigned mute switch flip doesn't mute. To keep the button's
-  own action as well, add the matching action to the list (Go to Home Screen,
-  App Switcher, Siri, Reachability, Volume Up / Down, Sleep, Power Off Slider,
-  Mute On / Off).
-- **Off:** every press reaches iOS untouched and Triggr's actions run alongside.
+- **开启：** 按键只运行分配给它的操作，和 Activator 一样：已分配的主屏幕按键不再回到主屏幕，
+  已分配的音量按键不再调节音量，已分配的锁定按键不再锁定设备，已分配的静音开关翻转不再静音。若要同时保留按键自身的
+  操作，请将对应操作加入列表（回到主屏幕、
+  应用切换器、Siri、单手模式、音量加 / 减、休眠、电源关闭滑块、
+  静音开 / 关）。
+- **关闭：** 每次按下都原样交给 iOS，Triggr 的操作并行运行。
 
-Touch ID Finger Rest / Match, volume holds and Up then Down always run alongside.
+触控 ID 手指静置 / 匹配、音量长按以及先上后下始终并行运行。
 
-### Lock button
+### 锁屏按钮
 
-With Replace Button Actions on, the lock / side button works like Activator's:
+在替换按键操作开启时，锁屏 / 侧边按钮与 Activator 行为一致：
 
-- An assigned **Single Press** runs instead of locking. When Double or Triple
-  Press is assigned too, presses wait 0.4 s after the last one to be counted.
-- An assigned **Hold** runs instead of the power-off slider (or Siri).
-- A count with nothing assigned is handed back to iOS: it still locks, opens
-  Wallet or runs the Accessibility Shortcut.
-- A press that starts on a dark screen always just wakes the phone.
-- Four or more presses are never acted on, so Emergency SOS keeps working.
+- 已分配的**单击**会替代锁定而执行。同时分配了双击或三击
+  时，按下会在最后一次按下后等待 0.4 秒再计数。
+- 已分配的**按住**替代电源关闭滑块（或 Siri）执行。
+- 没有分配任何操作的按键序列交还给 iOS：它仍然锁定、
+  打开 Wallet 或运行辅助功能快捷键。
+- 在暗屏上开始的按键按下永远只唤醒手机。
+- 四次或更多次按下永不触发操作，因此紧急 SOS 保持可用。
 
-### Lock Screen
+### 锁屏时
 
-Apps, URLs, Shortcuts and Settings pages can't open over the Lock Screen, so they
-wait until you unlock. iOS's own unlock action block
-(`SBLockScreenManager setUnlockActionBlock:`) runs them once you authenticate. With
-**Commands Need Passcode** on (the default), shell commands wait too when a
-passcode is set.
+应用、URL、快捷指令和设置页面无法在锁屏上打开，因此它们
+会等到你解锁后再执行。iOS 自身的解锁操作块
+（`SBLockScreenManager setUnlockActionBlock:`）在你完成身份验证后运行它们。在
+**命令需要密码**开启时（默认），当设备设置了密码时 shell 命令同样会等待。
 
 ### triggrd
 
-On iOS 18 SpringBoard isn't allowed to start programs, so Run Command and
-extension actions are handed to **triggrd**, a small daemon (running as mobile)
-installed with Triggr. It only runs commands and extension actions that are in
-your own assignments or menus. On iOS 15–17 SpringBoard starts them itself.
+在 iOS 18 上，SpringBoard 不允许启动程序，因此运行命令和
+扩展操作会交给**triggrd**，一个随 Triggr 安装的小型守护进程（以 mobile 用户运行）。
+它只运行出现在你自己的分配或菜单中的命令与扩展操作。在 iOS 15–17 上由 SpringBoard 自行启动它们。
 
-### Extras
+### 附加
 
-- **Profiles & Sharing:**
-  - Save your setup as a profile and switch between profiles.
-  - **Export** a setup as a `.json` file (share sheet), or **Import** one from
-    Files. Import keeps only known settings and value types, shows a summary
-    (assignments, menus, shell commands, URLs) and warns about shell commands
-    before replacing anything. Export warns when the setup includes Wi-Fi or
-    Bluetooth names or shell commands.
-  - **Reset to Defaults** clears everything except saved profiles.
-- **Options → Block List:** triggers are ignored inside chosen apps.
-- **Options → Show Action Banners:** a small pill naming what just ran.
+- **配置文件与共享：**
+  - 将你的设置保存为配置文件，并在配置文件间切换。
+  - **导出**设置为一个 `.json` 文件（共享表单），或从
+    文件导入一个。导入只保留已知的设置与值类型，显示摘要
+    （分配、菜单、shell 命令、URL），并在替换任何内容前警告 shell 命令。
+    导出时若设置包含 Wi-Fi 或蓝牙名称或 shell 命令会发出警告。
+  - **恢复默认**清空除已保存配置文件外的所有内容。
+- **选项 → 阻止列表：** 在所选应用内部忽略触发器。
+- **选项 → 显示操作横幅：** 一个显示刚运行内容的小胶囊。
 
-### API (for other tweaks and scripts)
+### API（供其他插件与脚本使用）
 
-Off by default: **Settings → Triggr → Options → Allow API**. Darwin notifications carry no
-sender, so any process could post one. That's why the API can only run
-**built-in actions, your assigned triggers and your menus**, never arbitrary shell
-commands, URLs or apps. Profiles and imports never switch it on.
+默认关闭：**设置 → Triggr → 选项 → 允许 API**。Darwin 通知不携带发送方信息，
+因此任何进程都可能发布通知。正因如此，API 只能运行
+**内建操作、你已分配的触发器与你的菜单**，永远不会执行任意 shell
+命令、URL 或应用。配置文件与导入永远不会把它打开。
 
-- Tweaks: `notify_post("com.johndie.triggr/api/run/<action>")`, `…/api/trigger/<trigger>`,
-  `…/api/menu/<menu id>`.
-- Command line: `triggr list`, `triggr run toggle.flashlight`,
-  `triggr trigger statusbar.doubletap`, `triggr menu Quick`.
-- Shortcuts: use the **Run Script Over SSH** action (host `127.0.0.1`, user
-  `mobile`) with a `triggr` command. This needs OpenSSH.
+- 插件：`notify_post("com.johndie.triggr/api/run/<动作>")`、`…/api/trigger/<触发器>`、
+  `…/api/menu/<菜单 id>`。
+- 命令行：`triggr list`、`triggr run toggle.flashlight`、
+  `triggr trigger statusbar.doubletap`、`triggr menu Quick`。
+- 快捷指令：使用**通过 SSH 运行脚本**操作（主机 `127.0.0.1`，用户
+  `mobile`）配合 `triggr` 命令。这需要 OpenSSH。
 
-There's no `triggr://` URL scheme. iOS only opens schemes that belong to an
-installed app, and the request fails in the calling app before SpringBoard sees
-it.
+不存在 `triggr://` URL scheme。iOS 只打开属于已安装应用的 scheme，
+而请求在调用方应用内就失败了，SpringBoard 根本不会看到它。
 
-### Notes and limits
+### 注意事项与限制
 
-- **Menus** don't open while the device is locked.
-- **Scheduled** events are skipped if iOS runs the timer more than 5 minutes late.
-- Taking an AirPod out can count as "Headphones Disconnected".
-- Control Center's Wi-Fi button only disconnects from the network; Wi-Fi stays on.
-- **Last App** only knows the apps opened since the last respring.
-- Turning **Dark Mode** on or off ends an automatic appearance schedule.
-- Not offered: slide-in screen edge gestures (they compete with the system's own),
-  call events, headset button, VPN and Personal Hotspot.
+- **菜单**在设备锁定时无法打开。
+- 如果 iOS 将计时器延后超过 5 分钟，**定时**事件会被跳过。
+- 取出 AirPod 可能被计为“耳机已断开”。
+- 控制中心的 Wi-Fi 按钮只断开网络；Wi-Fi 保持开启。
+- **上一个应用**只识别上次注销后打开的应用。
+- 打开或关闭**深色模式**会结束自动外观时间表。
+- 未提供：屏幕边缘滑入手势（它们与系统自身手势冲突）、
+  通话事件、耳机按钮、VPN 和个人热点。
 
-## Bugs and feature requests
+## Bug 与功能请求
 
-Use [**Issues**](../../issues/new/choose) and include your **device chip, iOS
-version, jailbreak and Triggr version**. Beta builds and their feedback live in
-[triggr-beta](https://github.com/Jond-ie/triggr-beta).
+使用 [**Issues**](../../issues/new/choose) 提交，并附上你的**设备芯片、iOS
+版本、越狱方式和 Triggr 版本**。Beta 版本及其反馈在
+[triggr-beta](https://github.com/Jond-ie/triggr-beta)。
 
-### Getting a crash log
+### 获取崩溃日志
 
-1. Open **Settings → Privacy & Security → Analytics & Improvements → Analytics Data**.
-2. Find the entry from the time of the crash. Look for **SpringBoard**,
-   **Preferences** or **Triggr** in the name.
-3. Tap it, then share or copy the text into your crash report.
+1. 打开**设置 → 隐私与安全性 → 分析与改进 → 分析数据**。
+2. 找到崩溃时刻对应的条目。在名称中查找 **SpringBoard**、
+   **Preferences** 或 **Triggr**。
+3. 轻点它，然后将文本分享或复制到你的崩溃报告中。
 
-**Check before posting:** crash logs and exported setups can include personal
-details. Examples are app names, Wi-Fi network or Bluetooth device names used in
-your events, and shell commands. Remove anything you don't want public.
+**发布前请检查：** 崩溃日志和导出的设置可能包含个人
+信息。示例包括应用名称、你的事件中使用的 Wi-Fi 网络或蓝牙设备名称，以及 shell 命令。
+删除任何你不想公开的内容。
 
 ## Building
 
-Install from [John's Repo](https://jond-ie.github.io/repo/) unless you want to
-change the code. You need [Theos](https://theos.dev/docs/installation) with an iOS
-SDK (built against 16.5 from [theos/sdks](https://github.com/theos/sdks)) and the
-rootless scheme; AltList is vendored in `vendor/` for linking.
+除非你要修改代码，否则请从 [John's Repo](https://jond-ie.github.io/repo/) 安装。
+你需要 [Theos](https://theos.dev/docs/installation)，搭配 iOS SDK（基于
+[theos/sdks](https://github.com/theos/sdks) 中的 16.5 构建）以及
+rootless scheme；AltList 已内置在 `vendor/` 中用于链接。
 
 ```bash
 make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
 ```
 
-The Makefile builds arm64. Release builds add arm64e (`ARCHS="arm64 arm64e"`),
-which needs a clang with the current arm64e ABI (Xcode's, or upstream LLVM 20 or
-newer).
+Makefile 构建 arm64。正式版本会加入 arm64e（`ARCHS="arm64 arm64e"`），
+这需要支持当前 arm64e ABI 的 clang（Xcode 自带的，或更新的上游 LLVM 20）。
 
 > AI assisted in development (Claude Code), all testing and debugging done by me on device.
 
-## License and credits
+## 许可证与致谢
 
-Triggr is free software under the [GNU General Public License v3.0](LICENSE).
+Triggr 是以 [GNU General Public License v3.0](LICENSE) 许可的免费软件。
 
-- **Triggr** by **John d_ie** ([John's Repo](https://jond-ie.github.io/repo/)).
-- Inspired by **Activator** by Ryan Petrich.
-- **[AltList](https://github.com/opa334/AltList)** by opa334 (Lars Fröder), MIT
-  License; its files in `vendor/` keep their own license ([vendor/AltList-LICENSE](vendor/AltList-LICENSE)).
-- Built with [Theos](https://theos.dev/).
+- **Triggr** 作者 **John d_ie**（[John 的源](https://jond-ie.github.io/repo/)）。
+- 灵感源自 Ryan Petrich 的 **Activator**。
+- **[AltList](https://github.com/opa334/AltList)** 作者 opa334（Lars Fröder），MIT
+  License；其 `vendor/` 中的文件保留各自的许可证（[vendor/AltList-LICENSE](vendor/AltList-LICENSE)）。
+- 使用 [Theos](https://theos.dev/) 构建。

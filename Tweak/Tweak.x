@@ -1072,13 +1072,13 @@ static void TGRunActions(NSArray<NSString *> *actions) {
 
 // A title for any action, with app and menu names looked up in SpringBoard.
 static NSString *TGSpringBoardTitle(NSString *action) {
-    if ([action hasPrefix:TGMenuPrefix]) return tgMenuNames[[action substringFromIndex:TGMenuPrefix.length]] ?: @"Menu";
+    if ([action hasPrefix:TGMenuPrefix]) return tgMenuNames[[action substringFromIndex:TGMenuPrefix.length]] ?: @"菜单";
     if ([action hasPrefix:TGAppPrefix]) {
         id controller = TGShared("SBApplicationController");
         NSString *identifier = [action substringFromIndex:TGAppPrefix.length];
         id app = [controller respondsToSelector:@selector(applicationWithBundleIdentifier:)] ? [controller performSelector:@selector(applicationWithBundleIdentifier:) withObject:identifier] : nil;
         id name = [app respondsToSelector:@selector(displayName)] ? [app performSelector:@selector(displayName)] : nil;
-        return [@"Open " stringByAppendingString:[name isKindOfClass:NSString.class] ? name : identifier];
+        return [@"打开 " stringByAppendingString:[name isKindOfClass:NSString.class] ? name : identifier];
     }
     return TGActionTitle(action);
 }
@@ -1166,7 +1166,7 @@ static void TGShowMenu(NSString *menuID) {
             TGRunActions(@[item]);
         }]];
     }
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) { TGCloseMenu(); }]];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) { TGCloseMenu(); }]];
     UIView *root = tgMenuWindow.rootViewController.view;
     sheet.popoverPresentationController.sourceView = root;
     sheet.popoverPresentationController.sourceRect = CGRectMake(CGRectGetMidX(root.bounds), CGRectGetMidY(root.bounds), 1, 1);

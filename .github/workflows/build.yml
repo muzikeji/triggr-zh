@@ -1,0 +1,91 @@
+name: Build .deb
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: rootless-arm64
+            scheme: rootless
+            arch: arm64
+            pkgarch: iphoneos-arm64
+            theos_repo: https://github.com/theos/theos.git
+          - name: roothide-arm64e
+            scheme: roothide
+            arch: arm64e
+            pkgarch: iphoneos-arm64e
+            theos_repo: https://github.com/roothide/theos.git
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Theos dependencies
+        run: brew install ldid xz libarchive dpkg
+
+      - name: Set up Theos (${{ matrix.name }})
+        run: |
+          git clone --depth 1 --recursive ${{ matrix.theos_repo }} $THEOS
+          echo "THEOS=$THEOS" >> $GITHUB_ENV
+        env:
+          THEOS: /Users/runner/theos
+
+      - name: Download iOS SDK
+        run: |
+          mkdir -p $THEOS/sdks
+          cd $THEOS/sdks
+          curl -L -o sdks.zip https://github.com/theos/sdks/archive/refs/heads/master.zip
+          unzip -q sdks.zip
+          mv sdks-master/iPhoneOS16.5.sdk ./
+          rm -rf sdks-master sdks.zip
+        env:
+          THEOS: /Users/runner/theos
+
+      - name: Fix Architecture in control
+        run: |
+          sed -i '' 's/^Architecture:.*/Architecture: ${{ matrix.pkgarch }}/' control
+          grep '^Architecture:' control
+          grep '^Name:' control
+          grep '^Version:' control
+
+      - name: Build package (${{ matrix.name }})
+        run: |
+          echo "== THEOS=$THEOS =="
+          ls -la $THEOS/sdks/
+          echo "== SDK check =="
+          ls $THEOS/sdks/iPhoneOS16.5.sdk/System/Library/PrivateFrameworks/Preferences.framework/
+          echo "== scheme module check =="
+          ls $THEOS/vendor/mod/
+          make package SYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" ISYSROOT="$THEOS/sdks/iPhoneOS16.5.sdk" FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=${{ matrix.scheme }} ARCHS=${{ matrix.arch }}
+          ls -la packages/
+
+      - name: Sanity check layout
+        run: |
+          DEB=$(ls packages/*.deb)
+          echo "== package info =="
+          dpkg-deb -f "$DEB" Package Version Architecture
+          mkdir -p check
+          dpkg-deb -x "$DEB" check
+          find check -mindepth 1 -maxdepth 3 | sort
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: triggr-zh-deb-${{ matrix.pkgarch }}
+          path: packages/*.deb
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') && matrix.name == 'rootless-arm64'
+        with:
+          files: packages/*.deb
+          generate_release_notes: true
