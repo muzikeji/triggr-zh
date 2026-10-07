@@ -23,5 +23,5 @@ include $(THEOS_MAKE_PATH)/aggregate.mk
 # RootHide's launchd reads daemon paths relative to the jailbreak folder.
 ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
 internal-stage::
-	$(ECHO_NOTHING)find "$(THEOS_STAGING_DIR)" -name com.johndie.triggrd.plist -exec sed -i 's#/var/jb##' {} \;$(ECHO_END)
+	$(ECHO_NOTHING)find "$(THEOS_STAGING_DIR)" -name com.johndie.triggrd.plist -exec perl -pi -e 's#/var/jb##' {} \;$(ECHO_END)
 endif
